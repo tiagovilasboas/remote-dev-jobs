@@ -1,0 +1,39 @@
+name: Preview Audit
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build web
+        run: pnpm --filter web build
+
+      - name: Start web server
+        run: pnpm --filter web start -- -p 3000 &
+
+      - name: Run unlighthouse audit
+        run: pnpm audit
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: unlighthouse-report
+          path: ./.unlighthouse 
