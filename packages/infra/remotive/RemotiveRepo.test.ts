@@ -8,7 +8,7 @@ const sampleApiResponse = {
       id: 1,
       title: 'Senior JS Dev',
       company_name: 'Acme',
-      candidate_required_location: 'Worldwide',
+      candidate_required_location: 'Remote - Worldwide',
       salary: '$100k',
       url: 'https://example.com',
       publication_date: '2024-01-01T00:00:00',
