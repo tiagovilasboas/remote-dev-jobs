@@ -24,11 +24,11 @@
    • web → application
 🔹 Alias de importação:
    • `@/*` → `apps/web/src/*`
-   • `@tiago/<pkg>` → `packages/<pkg>/`
+   • `@remote-dev-jobs/<pkg>` ou `@tiago/<pkg>` → `packages/<pkg>/` (aliases duplicados para transição)
 🔹 Segurança: middleware `@next-safe/middleware` com CSP básico.
 🔹 Lint extra: `eslint-plugin-unused-imports`, `prettier-plugin-tailwindcss`.
 🔹 Pirâmide de testes:
-   • **unit** – core & application (Vitest + contratos)
+   • **unit** – core & application (Jest + contratos)
    • **integration** – infra (mock externo mínimo)
    • **e2e** – web (Cypress/Playwright)
 
@@ -59,7 +59,7 @@ We periodically audit the codebase to ensure it still honours the principles doc
    Cada diretório tem um motivo único para mudar.
 2. **Camadas protegidas**  
    `eslint-plugin-boundaries` impede dependências ilegais (ex.: infra → web).  
-   Alias de paths claros (`@tiago/*`, `@/*`).
+   Alias de paths claros (`@remote-dev-jobs/*`, `@tiago/*`).
 3. **Clean-Code rules**  
    – Funções curtas (<20 linhas) e claras.  
    – Convenção `verboSubstantivo` nos métodos (`toggleFavorite`, `listAll`).  
@@ -77,3 +77,19 @@ We periodically audit the codebase to ensure it still honours the principles doc
 4. **Domain events** – avaliar necessidade quando favoritos persistirem em Supabase.
 
 > Próxima revisão arquitetural planejada após introdução de autenticação real e favoritos em Supabase. 
+
+## Por que este repositório é um Boilerplate completo?
+
+Este projeto serve como ponto de partida para qualquer aplicação full-stack Next.js + TypeScript porque já entrega:
+
+| Pilar | O que já vem pronto | Benefício |
+|-------|--------------------|-----------|
+| Produtividade | Next 14 (App Router), Tailwind, Plop generators | Comece a codar em minutos |
+| Arquitetura | Camadas Core → Application → Infra → Web; regras `boundaries` | Escala e testes sem dívidas |
+| Qualidade | ESLint (+jsx-a11y, formatjs, unused-imports), Prettier, Tailwind sorting | Código limpo por padrão |
+| Testes | Jest unit + contract; Infra integração; E2E (slot) | Pirâmide de testes pronta |
+| CI & Performance | Turbo cache, Unlighthouse ≥95, Husky + lint-staged | Feedback rápido e confiável |
+| Segurança | `@next-safe/middleware` (CSP), dependabot ready | Boas práticas desde o início |
+| Versionamento | Changesets para publicar pacotes (ex.: `ui`) | Reuso dentro ou fora do mono |
+
+> Basta focar na lógica de negócio e UI; infraestrutura e boas práticas já estão pavimentadas. 

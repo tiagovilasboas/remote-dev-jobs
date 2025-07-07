@@ -44,3 +44,6 @@ cypress/videos/
 # Misc editor/history
 .history/
 Thumbs.db
+
+# TypeScript incremental build info
+*.tsbuildinfo
