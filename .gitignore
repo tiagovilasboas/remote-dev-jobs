@@ -1,0 +1,27 @@
+node_modules
+
+# Build outputs
+dist/
+.next/
+apps/**/.next/
+
+# Turbo cache
+.turbo/
+
+# Logs
+*.log
+pnpm-debug.log*
+
+# Test coverage
+coverage/
+
+# Env
+.env*
+
+# Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Reports
+.unlighthouse/
