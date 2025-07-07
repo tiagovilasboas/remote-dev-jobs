@@ -1,6 +1,49 @@
 {
-  "extends": "next/tsconfig.json",
+  "extends": "@tsconfig/next/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "."
-  }
-} 
+    "baseUrl": ".",
+    "paths": {
+      "@tiago/*": [
+        "../../*"
+      ],
+      "@remote-dev-jobs/*": [
+        "../../*"
+      ],
+      "@tiago/core/*": [
+        "../../packages/core/src/*"
+      ],
+      "@tiago/application/*": [
+        "../../packages/application/src/*"
+      ],
+      "@tiago/infra/*": [
+        "../../packages/infra/*"
+      ],
+      "@remote-dev-jobs/core/*": [
+        "../../packages/core/src/*"
+      ],
+      "@remote-dev-jobs/infra/*": [
+        "../../packages/infra/*"
+      ],
+      "@remote-dev-jobs/application/*": [
+        "../../packages/application/src/*"
+      ],
+      "@remote-dev-jobs/ui/*": [
+        "../../packages/ui/src/*"
+      ],
+      "@remote-dev-jobs/infra": [
+        "../../packages/infra"
+      ],
+      "@remote-dev-jobs/core": [
+        "../../packages/core/src"
+      ],
+      "@remote-dev-jobs/application": [
+        "../../packages/application/src"
+      ]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "src/**/*",
+    ".next/types/**/*.ts"
+  ]
+}

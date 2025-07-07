@@ -10,11 +10,19 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
+      "@remote-dev-jobs/core/*": ["packages/core/src/*"],
+      "@remote-dev-jobs/infra/*": ["packages/infra/*"],
+      "@remote-dev-jobs/application/*": ["packages/application/src/*"],
+      "@remote-dev-jobs/ui/*": ["packages/ui/src/*"],
       "@tiago/core/*": ["packages/core/src/*"],
       "@tiago/application/*": ["packages/application/src/*"],
       "@tiago/infra/*": ["packages/infra/*"],
-      "@tiago/web/*": ["apps/web/*"]
+      "@tiago/web/*": ["apps/web/*"],
+      "@remote-dev-jobs/core": ["packages/core/src"],
+      "@remote-dev-jobs/infra": ["packages/infra"],
+      "@remote-dev-jobs/application": ["packages/application/src"],
+      "@remote-dev-jobs/ui": ["packages/ui/src"]
     },
-    "types": ["node"]
+    "types": ["node", "jest"]
   }
 } 
