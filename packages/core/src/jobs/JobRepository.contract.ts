@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+// Jest globals used directly
 import { JobRepository } from './JobRepository';
 import { JobId } from './JobId';
 

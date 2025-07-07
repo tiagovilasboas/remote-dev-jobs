@@ -1,6 +1,6 @@
 import { register } from '../../core/src/jobs/JobRepository.contract';
 import { RemotiveRepo } from './RemotiveRepo';
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+/* eslint-disable jest/no-conditional-expect */
 
 const sampleApiResponse = {
   jobs: [
@@ -21,7 +21,7 @@ register(() => new RemotiveRepo());
 describe('RemotiveRepo specific', () => {
   beforeEach(() => {
     // @ts-ignore
-    global.fetch = vi.fn(() =>
+    global.fetch = jest.fn(() =>
       Promise.resolve({
         ok: true,
         json: () => Promise.resolve(sampleApiResponse),
@@ -30,7 +30,7 @@ describe('RemotiveRepo specific', () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    jest.restoreAllMocks();
   });
 
   it('maps jobs from API', async () => {

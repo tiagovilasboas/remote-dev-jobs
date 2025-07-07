@@ -1,4 +1,5 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+/** @jest-environment jsdom */
+
 import { useUserStore, User } from './useUserStore';
 
 const alice: User = {
