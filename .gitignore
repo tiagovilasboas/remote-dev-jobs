@@ -25,3 +25,22 @@ coverage/
 
 # Reports
 .unlighthouse/
+
+# Universal dist folders
+**/dist/
+
+# Storybook build
+storybook-static/
+
+# Hosting platform folders
+.vercel/
+.netlify/
+
+# E2E caches
+.playwright/
+cypress/screenshots/
+cypress/videos/
+
+# Misc editor/history
+.history/
+Thumbs.db
