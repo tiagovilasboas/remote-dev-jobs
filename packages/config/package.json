@@ -1,0 +1,15 @@
+{
+  "name": "@remote-dev-jobs/config",
+  "version": "0.1.0",
+  "private": true,
+  "main": "eslint-preset.js",
+  "exports": {
+    "./eslint": "./eslint-preset.js",
+    "./prettier": "./prettier.config.js"
+  },
+  "peerDependencies": {
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "eslint-plugin-boundaries": "^3.1.0"
+  }
+} 
