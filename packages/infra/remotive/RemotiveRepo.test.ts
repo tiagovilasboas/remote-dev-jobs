@@ -1,4 +1,4 @@
-import { register } from '@tiago/core/jobs/JobRepository.contract';
+import { register } from '../../core/src/jobs/JobRepository.contract';
 import { RemotiveRepo } from './RemotiveRepo';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 
