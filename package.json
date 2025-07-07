@@ -12,7 +12,8 @@
     "lint": "turbo run lint",
     "prepare": "husky install",
     "plop": "plop",
-    "audit": "unlighthouse --site=http://localhost:3000 --budget=95"
+    "audit": "unlighthouse --site=http://localhost:3000 --budget=95",
+    "changeset": "changeset"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.7.1",
@@ -26,8 +27,12 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-formatjs": "^5.4.0",
     "unlighthouse": "^0.17.1",
-    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
-    "kill-port": "^2.0.1"
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "kill-port": "^2.0.1",
+    "prettier-plugin-tailwindcss": "^0.5.7",
+    "eslint-plugin-unused-imports": "^3.1.0",
+    "@next-safe/middleware": "^6.3.0",
+    "@changesets/cli": "^2.27.1"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,json,md}": [
@@ -37,5 +42,9 @@
   "dependencies": {
     "zustand": "^4.5.3",
     "immer": "^10.0.3"
+  },
+  "changeset": {
+    "commit": "chore(release): version packages",
+    "baseBranch": "main"
   }
 } 

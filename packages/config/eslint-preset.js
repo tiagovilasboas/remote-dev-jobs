@@ -1,6 +1,6 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'boundaries'],
+  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'boundaries', 'unused-imports'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -37,5 +37,6 @@ module.exports = {
         ],
       },
     ],
+    'unused-imports/no-unused-imports': 'warn',
   }
 }; 
