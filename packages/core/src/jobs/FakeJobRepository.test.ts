@@ -1,4 +1,4 @@
-import { register } from './JobRepository.contract.test';
+import { register } from './JobRepository.contract';
 import { FakeJobRepository } from './FakeJobRepository';
 import { Job } from './Job';
 
