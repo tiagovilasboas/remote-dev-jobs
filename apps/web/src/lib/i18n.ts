@@ -5,6 +5,7 @@ export const nextI18NextConfig: UserConfig = {
   i18n: {
     defaultLocale: 'pt-BR',
     locales: ['pt-BR', 'en'],
+    // @ts-expect-error - fallbackLng não existe na tipagem mas funciona na runtime
     fallbackLng: 'pt-BR',
   },
   ns: ['common', 'jobs', 'auth'],

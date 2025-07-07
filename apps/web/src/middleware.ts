@@ -1,10 +1,14 @@
-import createMiddleware from '@next-safe/middleware';
+import { nextSafe } from '@next-safe/middleware';
 
-export const middleware = createMiddleware({
+// eslint-disable-next-line @typescript-eslint/naming-convention
+const middlewareConfig = nextSafe({
   contentSecurityPolicy: {
     'script-src': ["'self'", 'https://www.googletagmanager.com'],
   },
 });
+
+// Next.js espera exportação chamada `middleware`
+export const middleware = middlewareConfig;
 
 export const config = {
   matcher: '/(.*)',
