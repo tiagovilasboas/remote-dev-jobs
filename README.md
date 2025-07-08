@@ -3,6 +3,18 @@
 > **Atenção**: o boilerplate genérico e independente de domínio está na **`boilerplate`** branch. A branch `main` que você está lendo agora contém uma implementação de exemplo para o domínio Remote-Dev-Jobs.
 
 +[![PWA Ready](https://img.shields.io/badge/PWA-ready-brightgreen)](https://web.dev/measure/) [![i18n Ready](https://img.shields.io/badge/i18n-ready-blue)]() [![Unlighthouse ≥95](https://img.shields.io/badge/Unlighthouse-%E2%89%A595-success)]()
++[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=nextdotjs)](https://nextjs.org) [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue?logo=typescript)](https://www.typescriptlang.org) [![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4-06B6D4?logo=tailwindcss)](https://tailwindcss.com) [![TurboRepo](https://img.shields.io/badge/TurboRepo-build-black?logo=vercel) ](https://turbo.build/repo) [![pnpm](https://img.shields.io/badge/pnpm-workspaces-F69220?logo=pnpm)](https://pnpm.io) [![Jest](https://img.shields.io/badge/Jest-testing-C21325?logo=jest)](https://jestjs.io)
+
+## Propósito
+
+Este repositório mostra, na prática, como construir uma plataforma de **vagas remotas** com tecnologia de ponta, mantendo **qualidade**, **performance** e **escala**:
+
+* Arquitetura **DDD** enxuta — camadas **Core → Application → Infra → Web** isoladas por regras ESLint.
+* Pipeline de qualidade automatizado: **Jest** (unit/integration), Turbo cache, Husky + lint-staged.
+* UI moderna com **Next.js 14 (App Router)**, **TailwindCSS** e componentes reutilizáveis do pacote `ui`.
+* Segurança e performance de produção (CSP via `@next-safe/middleware`, PWA scores ≥95 no Unlighthouse).
+
+Use-o como ponto de partida em novos projetos ou como vitrine do que já dominamos 🚀
 
 ## Estrutura
 
