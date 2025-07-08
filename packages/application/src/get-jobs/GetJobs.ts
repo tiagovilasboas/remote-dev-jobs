@@ -5,6 +5,7 @@ export interface GetJobsFilters {
   stack?: string;
   seniority?: string;
   location?: string;
+  query?: string;
 }
 
 export class GetJobs {
@@ -14,6 +15,15 @@ export class GetJobs {
     const effectiveFilters = { location: 'brazil', ...filters } as GetJobsFilters;
     const all = await this.jobRepo.listAll();
     return all.filter(job => {
+      if (
+        effectiveFilters.query &&
+        ![
+          job.title.toLowerCase(),
+          job.company.toLowerCase(),
+        ].some(text => text.includes(effectiveFilters.query!.toLowerCase()))
+      ) {
+        return false;
+      }
       if (effectiveFilters.stack && !job.title.toLowerCase().includes(effectiveFilters.stack.toLowerCase())) {
         return false;
       }

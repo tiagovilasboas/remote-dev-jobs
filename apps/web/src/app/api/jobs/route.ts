@@ -9,6 +9,7 @@ export async function GET(req: NextRequest) {
     stack: searchParams.get('stack') || undefined,
     seniority: searchParams.get('seniority') || undefined,
     location: searchParams.get('location') || undefined,
+    query: searchParams.get('q') || undefined,
   };
   const jobs = await getJobsFactory().execute(filters);
   return NextResponse.json(jobs);
