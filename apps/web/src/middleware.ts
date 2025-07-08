@@ -1,4 +1,6 @@
 import { nextSafe } from '@next-safe/middleware';
+import { isRateLimited } from './lib/rateLimiter';
+import { NextRequest, NextResponse } from 'next/server';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -15,7 +17,13 @@ const middlewareConfig = nextSafe({
 });
 
 // Next.js espera exportação chamada `middleware`
-export const middleware = middlewareConfig;
+export function middleware(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for') || req.ip || 'unknown';
+  if (req.nextUrl.pathname.startsWith('/api/jobs') && isRateLimited(ip)) {
+    return new NextResponse('Too Many Requests', { status: 429 });
+  }
+  return (middlewareConfig as any)(req);
+}
 
 export const config = {
   matcher: '/(.*)',
