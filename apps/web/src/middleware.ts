@@ -3,7 +3,7 @@ import { nextSafe } from '@next-safe/middleware';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const middlewareConfig = nextSafe({
   contentSecurityPolicy: {
-    'script-src': ["'self'", 'https://www.googletagmanager.com'],
+    'script-src': ["'self'", "'unsafe-inline'", 'https://www.googletagmanager.com'],
   },
 });
 
