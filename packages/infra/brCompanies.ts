@@ -1,10 +1,8 @@
 export enum GreenhouseCompanyBR {
   Nubank = 'nubank',
   QuintoAndar = 'quintoandar',
-  Wildlife = 'wildlife',
   Gympass = 'gympass',
   C6Bank = 'c6bank',
-  PicPay = 'picpay',
 }
 
 export const GREENHOUSE_BR_COMPANIES: string[] = Object.values(GreenhouseCompanyBR);
@@ -34,4 +32,11 @@ export enum GupyCompanyBR {
   Localiza = 'localiza',
 }
 
-export const GUPY_BR_COMPANIES: string[] = Object.values(GupyCompanyBR); 
+export const GUPY_BR_COMPANIES: string[] = Object.values(GupyCompanyBR);
+
+export const getEnumKeyByEnumValue = <T extends { [index: string]: string }>(
+  myEnum: T,
+  enumValue: string,
+): keyof T | undefined => {
+  return Object.keys(myEnum).find(x => myEnum[x] === enumValue);
+}; 

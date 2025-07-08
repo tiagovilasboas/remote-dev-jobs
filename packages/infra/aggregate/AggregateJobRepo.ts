@@ -1,7 +1,12 @@
-import { Job, JobId, JobRepository } from '@remote-dev-jobs/core';
+import { Job, JobRepository } from '@remote-dev-jobs/core';
 
 export class AggregateJobRepo implements JobRepository {
-  constructor(private readonly repos: JobRepository[]) {}
+  public readonly source = 'aggregate';
+  private reposBySource: Map<string, JobRepository>;
+
+  constructor(private readonly repos: JobRepository[]) {
+    this.reposBySource = new Map(repos.map(r => [r.source, r]));
+  }
 
   async listAll(): Promise<Job[]> {
     const lists = await Promise.all(this.repos.map(r => r.listAll()));
@@ -17,11 +22,13 @@ export class AggregateJobRepo implements JobRepository {
     return Array.from(map.values());
   }
 
-  async findById(id: JobId): Promise<Job | null> {
-    for (const repo of this.repos) {
-      const job = await repo.findById(id);
-      if (job) return job;
-    }
-    return null;
+  async getById(id: string): Promise<Job | null> {
+    const [source] = id.split('::');
+    if (!source) return null;
+
+    const repo = this.reposBySource.get(source);
+    if (!repo) return null;
+
+    return repo.getById(id);
   }
 } 

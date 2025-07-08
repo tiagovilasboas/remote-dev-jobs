@@ -1,5 +1,10 @@
 import { z } from 'zod';
 import { JobProps } from '@remote-dev-jobs/core/jobs/Job';
+import {
+  GUPY_BR_COMPANIES,
+  GupyCompanyBR,
+  getEnumKeyByEnumValue,
+} from '../brCompanies';
 
 const PostingSchema = z.object({
   id: z.string(),
@@ -37,23 +42,39 @@ const fetchCompanyJobs = async (company: string): Promise<GupyPosting[]> => {
 };
 
 export const fetchGupyJobs = async (
-  companies: string[],
-): Promise<{ company: string; jobs: GupyPosting[] }[]> => {
+  companies: string[] = GUPY_BR_COMPANIES,
+): Promise<(GupyPosting & { company: string })[]> => {
   const results = await Promise.all(
-    companies.map(async company => ({ company, jobs: await fetchCompanyJobs(company) })),
+    companies.map(async company => ({
+      company,
+      jobs: await fetchCompanyJobs(company),
+    })),
   );
-  return results;
+  return results.flatMap(result =>
+    result.jobs.map(job => ({ ...job, company: result.company })),
+  );
 };
 
 export const mapToJobProps = (
-  gp: GupyPosting,
-  company: string,
-): JobProps => ({
-  id: gp.id,
-  title: gp.title,
-  company,
-  location: gp.workplace || 'Remote',
-  salary: undefined,
-  url: gp.jobUrl,
-  publishedAt: new Date(gp.createdDate),
-}); 
+  gp: GupyPosting & { company: string },
+): JobProps => {
+  const companyName = getEnumKeyByEnumValue(GupyCompanyBR, gp.company) ?? 'Unknown';
+
+  const normalizeLocation = (location: string): string => {
+    const lower = location.toLowerCase();
+    if (lower.includes('são paulo') || lower.includes('sao paulo'))
+      return 'São Paulo, Brazil';
+    if (lower.includes('brazil') || lower.includes('brasil')) return 'Brazil';
+    return location;
+  };
+
+  return {
+    id: gp.id,
+    title: gp.title.trim(),
+    company: companyName,
+    location: normalizeLocation(gp.workplace || 'Remote'),
+    salary: undefined,
+    url: gp.jobUrl,
+    publishedAt: new Date(gp.createdDate),
+  };
+}; 

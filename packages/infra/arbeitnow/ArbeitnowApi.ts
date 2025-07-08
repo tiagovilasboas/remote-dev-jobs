@@ -33,12 +33,22 @@ export const fetchArbeitnowJobs = async (): Promise<ArbeitnowJob[]> => {
   }
 };
 
-export const mapToJobProps = (aj: ArbeitnowJob): JobProps => ({
-  id: aj.slug,
-  title: aj.title,
-  company: aj.company_name,
-  location: aj.location ?? 'Remote',
-  salary: aj.salary ?? undefined,
-  url: aj.url,
-  publishedAt: new Date(aj.created_at),
-}); 
+export const mapToJobProps = (aj: ArbeitnowJob): JobProps => {
+  const normalizeLocation = (location: string): string => {
+    const lower = location.toLowerCase();
+    if (lower.includes('são paulo') || lower.includes('sao paulo'))
+      return 'São Paulo, Brazil';
+    if (lower.includes('brazil') || lower.includes('brasil')) return 'Brazil';
+    return location;
+  };
+
+  return {
+    id: `arbeitnow::${aj.slug}`,
+    title: aj.title.trim(),
+    company: aj.company_name,
+    location: normalizeLocation(aj.location ?? 'Remote'),
+    salary: aj.salary ?? undefined,
+    url: aj.url,
+    publishedAt: new Date(aj.created_at),
+  };
+}; 

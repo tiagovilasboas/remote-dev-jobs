@@ -1,10 +1,14 @@
-import { Job, JobId } from '@remote-dev-jobs/core';
+import { Job } from '@remote-dev-jobs/core';
 import { JobRepository } from '@remote-dev-jobs/core';
-import { fetchGreenhouseJobs, mapToJobProps } from './GreenhouseApi';
-
-const COMPANY_NAME_FROM_URL = /https?:\/\/boards\.greenhouse\.io\/(?:embed\/)?([a-z0-9-]+)/i;
+import {
+  fetchGreenhouseJobs,
+  fetchGreenhouseJobById,
+  mapToJobProps,
+} from './GreenhouseApi';
 
 export class GreenhouseRepo implements JobRepository {
+  public readonly source = 'greenhouse';
+
   constructor(private readonly companies: string[] = []) {}
 
   async listAll(): Promise<Job[]> {
@@ -12,14 +16,24 @@ export class GreenhouseRepo implements JobRepository {
     const ghJobs = await fetchGreenhouseJobs(companies);
     return ghJobs.map(gj => {
       const jobProps = mapToJobProps(gj);
-      const match = COMPANY_NAME_FROM_URL.exec(jobProps.url);
-      const company = match?.[1] ?? 'Unknown';
-      return Job.create({ ...jobProps, company });
+      return Job.create(jobProps);
     });
   }
 
-  async findById(id: JobId): Promise<Job | null> {
-    const jobs = await this.listAll();
-    return jobs.find(j => j.id.value === id.value) ?? null;
+  async getById(id: string): Promise<Job | null> {
+    const [company, jobId] = id.split('::');
+    if (!company || !jobId) return null;
+
+    // We need to pass the company slug to the API, but the id is greenhouse::job_id
+    // The details endpoint for Greenhouse is /boards/{company}/jobs/{job_id}
+    // So we need to figure out which company the job belongs to.
+    // The simplest way for now is to pass the company slug in the ID.
+    const jobWithDetails = await fetchGreenhouseJobById(
+      `${company}::${jobId}`,
+    );
+    if (!jobWithDetails) return null;
+
+    const jobProps = mapToJobProps(jobWithDetails);
+    return Job.create(jobProps);
   }
 } 

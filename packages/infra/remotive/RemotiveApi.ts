@@ -9,6 +9,7 @@ const RemotiveJobSchema = z.object({
   salary: z.string().optional().nullable(),
   url: z.string().url(),
   publication_date: z.string(),
+  description: z.string().optional(),
 });
 
 const RemotiveResponseSchema = z.object({
@@ -27,12 +28,23 @@ export const fetchRemotiveJobs = async (): Promise<RemotiveJob[]> => {
   return parsed.jobs;
 };
 
-export const mapToJobProps = (rj: RemotiveJob): JobProps => ({
-  id: String(rj.id),
-  title: rj.title,
-  company: rj.company_name,
-  location: rj.candidate_required_location ?? 'Remote',
-  salary: rj.salary ?? undefined,
-  url: rj.url,
-  publishedAt: new Date(rj.publication_date),
-}); 
+export const mapToJobProps = (rj: RemotiveJob): JobProps => {
+  const normalizeLocation = (location: string): string => {
+    const lower = location.toLowerCase();
+    if (lower.includes('são paulo') || lower.includes('sao paulo'))
+      return 'São Paulo, Brazil';
+    if (lower.includes('brazil') || lower.includes('brasil')) return 'Brazil';
+    return location;
+  };
+
+  return {
+    id: `remotive::${rj.id}`,
+    title: rj.title.trim(),
+    company: rj.company_name,
+    location: normalizeLocation(rj.candidate_required_location ?? 'Remote'),
+    salary: rj.salary ?? undefined,
+    url: rj.url,
+    publishedAt: new Date(rj.publication_date),
+    description: rj.description,
+  };
+}; 
