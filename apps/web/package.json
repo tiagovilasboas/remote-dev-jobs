@@ -9,17 +9,19 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.4.2",
-    "@remote-dev-jobs/ui": "workspace:*"
+    "@remote-dev-jobs/ui": "workspace:*",
+    "kill-port": "^2.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.24",
     "@types/react-dom": "^18.2.17",
     "@types/node": "^20.10.5",
     "typescript": "^5.3.3",
-    "@remote-dev-jobs/config": "workspace:*"
+    "@remote-dev-jobs/config": "workspace:*",
+    "kill-port": "^2.0.1"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "kill-port 3000 && next dev -p 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

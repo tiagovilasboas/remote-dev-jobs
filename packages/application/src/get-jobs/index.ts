@@ -14,4 +14,5 @@ export const getJobsFactory = () =>
   );
 
 export { GetJobs } from './GetJobs';
-export type { GetJobsFilters } from './GetJobs'; 
+export type { GetJobsFilters } from './GetJobs';
+export type { PaginationOptions, GetJobsResult } from './GetJobs'; 

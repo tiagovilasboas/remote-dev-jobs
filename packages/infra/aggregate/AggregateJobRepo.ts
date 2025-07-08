@@ -6,10 +6,12 @@ export class AggregateJobRepo implements JobRepository {
   async listAll(): Promise<Job[]> {
     const lists = await Promise.all(this.repos.map(r => r.listAll()));
     const merged = lists.flat();
+    const dedupKey = (job: Job) => `${job.title.toLowerCase()}|${job.company.toLowerCase()}`;
     const map = new Map<string, Job>();
     for (const job of merged) {
-      if (!map.has(job.id.value)) {
-        map.set(job.id.value, job);
+      const key = dedupKey(job);
+      if (!map.has(key)) {
+        map.set(key, job);
       }
     }
     return Array.from(map.values());

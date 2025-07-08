@@ -11,6 +11,10 @@ export async function GET(req: NextRequest) {
   setIf('seniority', searchParams.get('seniority'));
   setIf('location', searchParams.get('location'));
   setIf('query', searchParams.get('q'));
-  const jobs = await getJobsFactory().execute(filters);
-  return NextResponse.json(jobs);
+  setIf('page', searchParams.get('page'));
+  setIf('pageSize', searchParams.get('pageSize'));
+  const pageNum = Number(filters.page);
+  const sizeNum = Number(filters.pageSize);
+  const { items, total } = await getJobsFactory().execute(filters, { page: pageNum || 1, pageSize: sizeNum || 20 });
+  return NextResponse.json({ items, total, page: pageNum || 1, pageSize: sizeNum || 20 });
 } 
