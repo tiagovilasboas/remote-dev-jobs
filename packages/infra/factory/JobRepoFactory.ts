@@ -10,6 +10,7 @@ import { GupyRepo } from "../gupy/GupyRepo";
 import { HipstersRepo } from "../hipsters/HipstersRepo";
 import { IndeedRepo } from "../indeed/IndeedRepo";
 import { InfoJobsRepo } from "../infojobs/InfoJobsRepo";
+import { JSearchRepo } from "../jsearch/JSearchRepo";
 import { LeverRepo } from "../lever/LeverRepo";
 import { RemotarRepo } from "../remotar/RemotarRepo";
 // Importar todos os repositórios
@@ -25,7 +26,7 @@ import { WorkableRepo } from "../workable/WorkableRepo";
 import { JobRepository } from "@remote-dev-jobs/core";
 
 // Mapeamento de fontes para suas classes de repositório
-const REPO_CLASSES: Record<JobSource, new () => JobRepository> = {
+const REPO_CLASSES: Partial<Record<JobSource, new () => JobRepository>> = {
   [JobSource.REMOTIVE]: RemotiveRepo,
   [JobSource.ARBEITNOW]: ArbeitnowRepo,
   [JobSource.GREENHOUSE]: GreenhouseRepo,
@@ -60,6 +61,27 @@ export class JobRepoFactory {
       config.cacheKey,
       config.rateLimitMinutes,
     );
+  }
+
+  /**
+   * Cria um repositório direto (sem cache) para uma fonte específica
+   */
+  static createDirectRepo(source: JobSource, apiKey?: string): JobRepository {
+    // Casos especiais que precisam de parâmetros
+    if (source === JobSource.JSEARCH) {
+      if (!apiKey) {
+        throw new Error("API key é obrigatória para JSearch");
+      }
+      return new JSearchRepo(apiKey);
+    }
+
+    const RepoClass = REPO_CLASSES[source];
+
+    if (!RepoClass) {
+      throw new Error(`Repositório não encontrado para fonte: ${source}`);
+    }
+
+    return new RepoClass();
   }
 
   /**

@@ -1,4 +1,3 @@
-import { LEVER_BR_COMPANIES } from "../brCompanies";
 import { fetchLeverJobs, mapToJobProps } from "./LeverApi";
 import { Job, JobId } from "@remote-dev-jobs/core";
 import { JobRepository } from "@remote-dev-jobs/core";
@@ -6,13 +5,10 @@ import { JobRepository } from "@remote-dev-jobs/core";
 export class LeverRepo implements JobRepository {
   public readonly source = "lever";
 
-  constructor(private readonly companies: string[] = LEVER_BR_COMPANIES) {}
+  constructor() {}
 
   async listAll(): Promise<Job[]> {
-    if (this.companies.length === 0) {
-      return [];
-    }
-    const leverJobs = await fetchLeverJobs(this.companies);
+    const leverJobs = await fetchLeverJobs();
     return leverJobs.map((lj) => {
       const jobProps = mapToJobProps(lj);
       return Job.create(jobProps);

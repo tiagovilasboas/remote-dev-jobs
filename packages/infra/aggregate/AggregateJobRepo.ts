@@ -9,9 +9,41 @@ export class AggregateJobRepo implements JobRepository {
   }
 
   async listAll(): Promise<Job[]> {
-    const lists = await Promise.all(this.repos.map((r) => r.listAll()));
-    const merged = lists.flat();
-    return JobDeduplicator.deduplicate(merged);
+    const results = await Promise.allSettled(
+      this.repos.map(async (repo) => {
+        try {
+          const jobs = await repo.listAll();
+          console.log(`[${repo.source}] ${jobs.length} vagas encontradas`);
+          return jobs;
+        } catch (error) {
+          console.error(`[${repo.source}] Erro ao buscar vagas:`, error);
+          return [];
+        }
+      })
+    );
+
+    const successfulResults = results
+      .filter((result): result is PromiseFulfilledResult<Job[]> => 
+        result.status === 'fulfilled'
+      )
+      .map(result => result.value);
+
+    const failedResults = results
+      .filter((result): result is PromiseRejectedResult => 
+        result.status === 'rejected'
+      );
+
+    if (failedResults.length > 0) {
+      console.warn(`${failedResults.length} repositórios falharam:`, 
+        failedResults.map(r => r.reason?.message || 'Erro desconhecido')
+      );
+    }
+
+    const merged = successfulResults.flat();
+    const deduplicated = JobDeduplicator.deduplicate(merged);
+    
+    console.log(`Total de vagas após deduplicação: ${deduplicated.length}`);
+    return deduplicated;
   }
 
   async getById(id: string): Promise<Job | null> {

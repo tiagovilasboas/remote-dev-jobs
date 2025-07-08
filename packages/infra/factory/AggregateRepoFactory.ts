@@ -10,6 +10,8 @@ import {
   getSourceConfig,
 } from "../sources/JobSources";
 import { JobRepoFactory } from "./JobRepoFactory";
+import { JobRepository } from "@remote-dev-jobs/core";
+import { getEnvironmentConfig } from "../config/environment";
 
 export class AggregateRepoFactory {
   /**
@@ -97,7 +99,45 @@ export class AggregateRepoFactory {
    * Cria AggregateJobRepo com todos os repositórios habilitados
    */
   static createAggregateJobRepo(): AggregateJobRepo {
-    const repos = this.createAllRateLimitedRepos();
-    return new AggregateJobRepo(repos);
+    // Verificar se está rodando no servidor (Node.js) ou no cliente (browser)
+    const isServer = typeof window === 'undefined';
+    
+    if (isServer) {
+      // No servidor, usar apenas repositórios que não dependem do IndexedDB
+      const serverRepos = this.createServerRepos();
+      return new AggregateJobRepo(serverRepos);
+    } else {
+      // No cliente, usar repositórios com rate limiting
+      const repos = this.createAllRateLimitedRepos();
+      return new AggregateJobRepo(repos);
+    }
+  }
+
+  /**
+   * Cria repositórios que funcionam no servidor (sem IndexedDB)
+   */
+  private static createServerRepos(): JobRepository[] {
+    const enabledSources = getEnabledSources();
+    const config = getEnvironmentConfig();
+    
+    return enabledSources
+      .map((source) => {
+        try {
+          // JSearch precisa de API key
+          if (source === JobSource.JSEARCH) {
+            if (!config.JSEARCH_API_KEY) {
+              console.warn("JSearch API key não configurada, pulando...");
+              return null;
+            }
+            return JobRepoFactory.createDirectRepo(source, config.JSEARCH_API_KEY);
+          }
+          
+          return JobRepoFactory.createDirectRepo(source);
+        } catch (error) {
+          console.error(`Erro ao criar repositório para ${source}:`, error);
+          return null;
+        }
+      })
+      .filter((repo): repo is JobRepository => repo !== null);
   }
 }

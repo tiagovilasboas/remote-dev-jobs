@@ -1,4 +1,5 @@
 import { Job, JobRepository } from "@remote-dev-jobs/core";
+import { HttpClient } from "../utils/httpClient";
 
 export class CoodeshRepo implements JobRepository {
   public readonly source = "Coodesh";
@@ -6,59 +7,85 @@ export class CoodeshRepo implements JobRepository {
 
   async listAll(): Promise<Job[]> {
     try {
-      const response = await fetch(`${this.baseUrl}/vagas/frontend`);
+      console.log(`[${this.source}] Iniciando busca de vagas...`);
+      
+      const html = await HttpClient.fetchWithRetry(
+        `${this.baseUrl}/jobs`,
+        {
+          delayMs: 2000,
+          maxRetries: 3,
+          timeoutMs: 15000,
+        }
+      );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const html = await response.text();
-      return this.parseJobs(html);
+      const jobs = this.parseJobs(html);
+      console.log(`[${this.source}] ${jobs.length} vagas encontradas`);
+      return jobs;
     } catch (error) {
-      console.error("Erro ao buscar vagas do Coodesh:", error);
+      console.error(`[${this.source}] Erro ao buscar vagas:`, error);
       return [];
     }
   }
 
   async getById(id: string): Promise<Job | null> {
     try {
-      const response = await fetch(`${this.baseUrl}/vaga/${id}`);
-
-      if (!response.ok) {
-        return null;
-      }
-
-      const html = await response.text();
+      const html = await HttpClient.fetchWithRetry(
+        `${this.baseUrl}/vaga/${id}`,
+        {
+          delayMs: 1000,
+          maxRetries: 2,
+          timeoutMs: 10000,
+        }
+      );
       return this.parseJobDetail(html, id);
     } catch (error) {
-      console.error("Erro ao buscar vaga específica do Coodesh:", error);
+      console.error(`[${this.source}] Erro ao buscar vaga específica:`, error);
       return null;
     }
   }
 
   private parseJobs(html: string): Job[] {
     const jobs: Job[] = [];
-    const jobRegex =
-      /<div[^>]*class="[^"]*job-card[^"]*"[^>]*>.*?<a[^>]*href="([^"]*)"[^>]*>.*?<h3[^>]*>([^<]*)<\/h3>.*?<span[^>]*class="[^"]*company[^"]*"[^>]*>([^<]*)<\/span>.*?<span[^>]*class="[^"]*location[^"]*"[^>]*>([^<]*)<\/span>/gs;
+    
+    // Padrões atualizados para o Coodesh
+    const patterns = [
+      // Padrão principal para cards de vagas
+      /<div[^>]*class="[^"]*job-card[^"]*"[^>]*>.*?<a[^>]*href="([^"]*)"[^>]*>.*?<h3[^>]*>([^<]*)<\/h3>.*?<span[^>]*class="[^"]*company[^"]*"[^>]*>([^<]*)<\/span>.*?<span[^>]*class="[^"]*location[^"]*"[^>]*>([^<]*)<\/span>/gs,
+      
+      // Padrão alternativo para listagem
+      /<div[^>]*class="[^"]*job-item[^"]*"[^>]*>.*?<a[^>]*href="([^"]*)"[^>]*>.*?<h2[^>]*>([^<]*)<\/h2>.*?<div[^>]*class="[^"]*company[^"]*"[^>]*>([^<]*)<\/div>.*?<div[^>]*class="[^"]*location[^"]*"[^>]*>([^<]*)<\/div>/gs,
+      
+      // Padrão mais genérico
+      /<a[^>]*href="([^"]*\/vaga\/[^"]*)"[^>]*>.*?<h[2-4][^>]*>([^<]*)<\/h[2-4]>.*?<[^>]*class="[^"]*company[^"]*"[^>]*>([^<]*)<\/[^>]*>.*?<[^>]*class="[^"]*location[^"]*"[^>]*>([^<]*)<\/[^>]*>/gs,
+    ];
 
-    let match;
-    while ((match = jobRegex.exec(html)) !== null) {
-      const [, url, title, company, location] = match;
-      const id =
-        url.split("/").pop() || Math.random().toString(36).substr(2, 9);
+    for (const pattern of patterns) {
+      let match;
+      while ((match = pattern.exec(html)) !== null) {
+        const [, url, title, company, location] = match;
+        
+        // Validar se os dados são válidos
+        if (!title || !company || !url) continue;
+        
+        const id = url.split("/").pop() || Math.random().toString(36).substr(2, 9);
+        const fullUrl = url.startsWith("http") ? url : `${this.baseUrl}${url}`;
 
-      jobs.push(
-        Job.create({
-          id,
-          title: this.cleanText(title),
-          company: this.cleanText(company),
-          location: this.cleanText(location),
-          description: "",
-          url: url.startsWith("http") ? url : `${this.baseUrl}${url}`,
-          publishedAt: new Date(),
-          salary: undefined,
-        }),
-      );
+        jobs.push(
+          Job.create({
+            id,
+            title: this.cleanText(title),
+            company: this.cleanText(company),
+            location: this.cleanText(location),
+            description: "",
+            url: fullUrl,
+            publishedAt: new Date(),
+            salary: undefined,
+          }),
+        );
+      }
+      
+      // Se encontrou vagas com este padrão, para de tentar outros
+      if (jobs.length > 0) break;
     }
 
     return jobs;
@@ -95,6 +122,11 @@ export class CoodeshRepo implements JobRepository {
   private cleanText(text: string): string {
     return text
       .replace(/<[^>]*>/g, "")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
       .replace(/\s+/g, " ")
       .trim();
   }

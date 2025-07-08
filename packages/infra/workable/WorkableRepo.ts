@@ -1,20 +1,14 @@
-import { WORKABLE_BR_COMPANIES } from "../brCompanies";
-import {
-  fetchWorkableJobs,
-  fetchWorkableJobById,
-  mapToJobProps,
-} from "./WorkableApi";
+import { fetchWorkableJobs, fetchWorkableJobById, mapToJobProps } from "./WorkableApi";
 import { Job } from "@remote-dev-jobs/core";
 import { JobRepository } from "@remote-dev-jobs/core";
 
 export class WorkableRepo implements JobRepository {
   public readonly source = "workable";
 
-  constructor(private readonly companies: string[] = WORKABLE_BR_COMPANIES) {}
+  constructor() {}
 
   async listAll(): Promise<Job[]> {
-    if (this.companies.length === 0) return [];
-    const workableJobs = await fetchWorkableJobs(this.companies);
+    const workableJobs = await fetchWorkableJobs();
     return workableJobs.map((wj) => {
       const jobProps = mapToJobProps(wj);
       return Job.create(jobProps);
