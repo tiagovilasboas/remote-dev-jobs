@@ -1,5 +1,5 @@
 import { GetJobs } from './GetJobs';
-import { AggregateJobRepo, RemotiveRepo, ArbeitnowRepo, GreenhouseRepo, LeverRepo, WorkableRepo } from '@remote-dev-jobs/infra';
+import { AggregateJobRepo, RemotiveRepo, ArbeitnowRepo, GreenhouseRepo, LeverRepo, WorkableRepo, GupyRepo } from '@remote-dev-jobs/infra';
 
 export const getJobsFactory = () =>
   new GetJobs(
@@ -9,6 +9,7 @@ export const getJobsFactory = () =>
       new GreenhouseRepo(),
       new LeverRepo(),
       new WorkableRepo(),
+      new GupyRepo(),
     ]),
   );
 

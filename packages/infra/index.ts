@@ -4,4 +4,5 @@ export * from './arbeitnow/ArbeitnowRepo';
 export * from './greenhouse/GreenhouseRepo';
 export * from './lever/LeverRepo';
 export * from './aggregate/AggregateJobRepo';
-export * from './workable/WorkableRepo'; 
+export * from './workable/WorkableRepo';
+export * from './gupy/GupyRepo'; 

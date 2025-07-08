@@ -25,4 +25,13 @@ export enum WorkableCompanyBR {
   Buser = 'buser',
 }
 
-export const WORKABLE_BR_COMPANIES: string[] = Object.values(WorkableCompanyBR); 
+export const WORKABLE_BR_COMPANIES: string[] = Object.values(WorkableCompanyBR);
+
+export enum GupyCompanyBR {
+  BancoInter = 'bancointer',
+  Boticario = 'grupoboticario',
+  Totvs = 'totvs',
+  Localiza = 'localiza',
+}
+
+export const GUPY_BR_COMPANIES: string[] = Object.values(GupyCompanyBR); 
