@@ -29,7 +29,7 @@ export default function JobsSection({ filters, page }: Props) {
           ...res,
           items: res.items.map((j: any) => ({
             ...j,
-            id: ('value' in (j.id || {})) ? j.id : { value: String(j.id ?? `${j.title}-${j.company}`) },
+            id: { value: typeof j.id === 'string' ? j.id : (j.id?.value ?? String(j.id)) },
             publishedAt: new Date(j.publishedAt),
           })),
         }),
