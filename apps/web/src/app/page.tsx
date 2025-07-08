@@ -2,12 +2,12 @@ import { JobList } from '@remote-dev-jobs/ui';
 import { getJobsAction } from './actions/getJobs';
 
 export default async function HomePage({ searchParams }: { searchParams?: { [key: string]: string } }) {
-  const filters = {
-    stack: searchParams?.stack,
-    seniority: searchParams?.seniority,
-    location: searchParams?.location,
-    query: searchParams?.q,
-  };
+  const filters: any = {};
+  const set = (k:string,v?:string)=>{if(v) filters[k]=v};
+  set('stack', searchParams?.stack);
+  set('seniority', searchParams?.seniority);
+  set('location', searchParams?.location);
+  set('query', searchParams?.q);
   const jobs = await getJobsAction(filters);
 
   return (

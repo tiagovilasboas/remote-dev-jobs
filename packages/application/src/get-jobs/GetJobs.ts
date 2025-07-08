@@ -12,7 +12,10 @@ export class GetJobs {
   constructor(private readonly jobRepo: JobRepository) {}
 
   async execute(filters: GetJobsFilters = {}): Promise<Job[]> {
-    const effectiveFilters = { location: 'brazil', ...filters } as GetJobsFilters;
+    const effectiveFilters: GetJobsFilters = {
+      ...filters,
+      location: filters.location ?? 'brazil',
+    };
     const all = await this.jobRepo.listAll();
     return all.filter(job => {
       if (
