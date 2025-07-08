@@ -7,12 +7,17 @@ interface Props {
 
 export const JobCard = ({ job, href }: Props) => {
   const idStr = typeof job.id === 'string' ? job.id : job.id?.value ?? '';
+  const finalHref = href ?? (idStr ? `/jobs/${idStr}` : undefined);
   return (
     <div className="rounded border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition">
       <h3 className="text-lg font-semibold text-blue-600">
-        <a href={href ?? `/jobs/${idStr}`} className="hover:underline">
-          {job.title}
-        </a>
+        {finalHref ? (
+          <a href={finalHref} className="hover:underline">
+            {job.title}
+          </a>
+        ) : (
+          <span>{job.title}</span>
+        )}
       </h3>
       <p className="text-sm text-gray-700">
         {job.company} • {job.location}
