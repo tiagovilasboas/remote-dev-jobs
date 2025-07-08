@@ -16,4 +16,13 @@ export enum LeverCompanyBR {
   DellBrasil = 'dellbrasil',
 }
 
-export const LEVER_BR_COMPANIES: string[] = Object.values(LeverCompanyBR); 
+export const LEVER_BR_COMPANIES: string[] = Object.values(LeverCompanyBR);
+
+export enum WorkableCompanyBR {
+  Neon = 'neon',
+  Olist = 'olist',
+  Creditas = 'creditas',
+  Buser = 'buser',
+}
+
+export const WORKABLE_BR_COMPANIES: string[] = Object.values(WorkableCompanyBR); 
