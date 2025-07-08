@@ -1,4 +1,7 @@
 # Remote Dev Jobs – Monorepo (Turbo + pnpm)
+
+> **Heads-up**: the generic, domain-agnostic boilerplate can be found in the **`boilerplate`** branch. The `main` branch you are reading now contains a sample implementation for the Remote-Dev-Jobs domain.
+
 +[![PWA Ready](https://img.shields.io/badge/PWA-ready-brightgreen)](https://web.dev/measure/) [![i18n Ready](https://img.shields.io/badge/i18n-ready-blue)]() [![Unlighthouse ≥95](https://img.shields.io/badge/Unlighthouse-%E2%89%A595-success)]()
 
 ## Estrutura
