@@ -1,32 +1,22 @@
-import { Job } from '@remote-dev-jobs/core';
+import { JobItem } from './JobItem';
 
 interface Props {
-  job: Job;
-  href?: string;
+  job: JobItem;
+  isSelected?: boolean;
 }
 
-export const JobCard = ({ job, href }: Props) => {
-  const idStr = typeof job.id === 'string' ? job.id : String(job.id?.value ?? '');
-  const finalHref = href ?? (idStr ? `/jobs/${idStr}` : undefined);
+export const JobCard = ({ job, isSelected }: Props) => {
+  const cardClasses = `block p-4 border-b hover:bg-gray-100 ${isSelected ? 'bg-blue-100' : 'bg-white'}`;
+
   return (
-    <div className="rounded border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition">
-      <h3 className="text-lg font-semibold text-blue-600">
-        {finalHref ? (
-          <a href={finalHref} className="hover:underline">
-            {job.title}
-          </a>
-        ) : (
-          <span>{job.title}</span>
-        )}
-      </h3>
-      <pre className="mt-1 text-xs text-gray-400 break-all">{JSON.stringify(job.id)}</pre>
-      <p className="text-sm text-gray-700">
-        {job.company} • {job.location}
-      </p>
+    <div className={cardClasses}>
+      <h3 className="font-bold text-blue-700">{job.title}</h3>
+      <p className="text-gray-800">{job.company}</p>
+      <p className="text-sm text-gray-600">{job.location}</p>
       {job.salary && (
-        <p className="text-sm text-green-700 font-medium mt-1">{job.salary}</p>
+        <p className="text-sm text-gray-600 font-medium">{job.salary}</p>
       )}
-      <p className="text-xs text-gray-400 mt-2">
+      <p className="text-xs text-gray-500 mt-2">
         {job.publishedAt.toLocaleDateString()}
       </p>
     </div>

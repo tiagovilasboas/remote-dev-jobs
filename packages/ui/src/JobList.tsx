@@ -1,34 +1,37 @@
 "use client";
 
-import { Job } from '@remote-dev-jobs/core';
-import { JobCard, JobCardSkeleton } from './JobCard';
+import { JobCard } from './JobCard';
+import { JobItem } from './JobItem';
+import { Spinner } from './Spinner';
 
 interface Props {
-  jobs: Job[];
+  jobs: JobItem[];
   isLoading?: boolean;
-  baseQuery?: string;
+  children: (job: JobItem) => React.ReactNode;
 }
 
-export const JobList = ({ jobs, isLoading, baseQuery }: Props) => {
+export const JobList = ({ jobs, isLoading, children }: Props) => {
   if (isLoading) {
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <JobCardSkeleton key={i} />
-        ))}
+      <div className="flex justify-center items-center h-40">
+        <Spinner />
       </div>
     );
   }
 
   if (jobs.length === 0) {
-    return <p className="text-center text-gray-500">Nenhuma vaga encontrada 😔</p>;
+    return (
+      <div className="text-center text-gray-500 py-10">
+        Nenhuma vaga encontrada. Tente outros filtros.
+      </div>
+    );
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <ul>
       {jobs.map(job => (
-        <JobCard key={job.id.value} job={job} href={`/?${baseQuery ? baseQuery + '&' : ''}id=${job.id.value}`} />
+        <li key={job.id.value}>{children(job)}</li>
       ))}
-    </div>
+    </ul>
   );
 }; 
