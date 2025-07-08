@@ -1,11 +1,11 @@
-import { Job } from '@remote-dev-jobs/core/jobs/Job';
-import { JobRepository } from '@remote-dev-jobs/core/jobs/JobRepository';
+import { Job } from "@remote-dev-jobs/core/jobs/Job";
+import { JobRepository } from "@remote-dev-jobs/core/jobs/JobRepository";
 
 export class GetJobDetailsUseCase {
   constructor(private jobRepositories: Record<string, JobRepository>) {}
 
   async execute(id: string): Promise<Job | null> {
-    const [source, jobId] = id.split('::');
+    const [source, jobId] = id.split("::");
     if (!source || !jobId) {
       console.warn(`[GetJobDetails] Invalid job ID format: ${id}`);
       return null;
@@ -28,4 +28,4 @@ export class GetJobDetailsUseCase {
       return null;
     }
   }
-} 
+}
