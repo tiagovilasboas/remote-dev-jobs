@@ -20,6 +20,7 @@ O que começou como uma ferramenta pessoal se transformou em um exemplo prático
 - Pipeline de qualidade automatizado: **Jest** (unit/integration), Turbo cache, Husky + lint-staged.
 - UI moderna com **Next.js 14 (App Router)**, **TailwindCSS** e componentes reutilizáveis do pacote `ui`.
 - Segurança e performance de produção (CSP via `@next-safe/middleware`, PWA scores ≥95 no Unlighthouse).
+- **IA integrada** com JSearch API para busca inteligente de vagas usando GPT-3 + BERT.
 
 Use-o como ponto de partida em novos projetos ou como vitrine do que já dominamos 🚀
 
@@ -35,26 +36,28 @@ Use-o como ponto de partida em novos projetos ou como vitrine do que já dominam
 
 ## Clean Code & Arquitetura
 
-🔹 Funções com **máx. 20 linhas** e **apenas 1 nível** de abstração interna.
-🔹 Métodos de ação seguem padrão **verboSubstantivo** (`toggleFavorite`, `getJobs`).
-🔹 Evite `utils` genéricos – prefira nomes de domínio (ex.: `DateRange`).
-🔹 **Core depende só de interfaces**; implementações concretas ficam em _infra_.
-🔹 Camadas (via `eslint-plugin-boundaries`):
-• core → nenhum
-• application → core
-• infra → core
-• web → application
-🔹 Alias de importação:
-• `@/*` → `apps/web/src/*`
-• `@remote-dev-jobs/<pkg>` → `packages/<pkg>/`
-🔹 Segurança: middleware `@next-safe/middleware` com CSP básico.
-🔹 Lint extra: `eslint-plugin-unused-imports`, `prettier-plugin-tailwindcss`.
-🔹 Pirâmide de testes:
-• **unit** – core & application (Jest + contratos)
-• **integration** – infra (mock externo mínimo)
-• **e2e** – web (Cypress/Playwright)
+Este projeto segue um conjunto de diretrizes para garantir um código limpo, manutenível e escalável.
 
-> Siga estas práticas em novas features e PRs.
+### Princípios de Código
+- **Funções Curtas**: Máximo de 20 linhas e apenas um nível de abstração interna.
+- **Nomenclatura Clara**: Métodos de ação seguem o padrão `verboSubstantivo` (ex: `toggleFavorite`, `getJobs`).
+- **Evite `utils` Genéricos**: Prefira nomes de domínio específicos (ex: `DateRange` em vez de `dateUtils`).
+- **Injeção de Dependência**: O `core` depende apenas de interfaces; implementações concretas ficam em `infra`.
+
+### Arquitetura em Camadas
+As dependências entre os pacotes são rigorosamente controladas pela regra `boundaries` do ESLint.
+
+- `core`: Não possui dependências externas.
+- `application`: Depende apenas do `core`.
+- `infra`: Depende apenas do `core`.
+- `web`: Depende de `application` e `ui`.
+
+### Pirâmide de Testes
+- **Testes Unitários**: Foco em `core` e `application`, usando Jest e contratos de repositório.
+- **Testes de Integração**: Foco em `infra`, com mocks mínimos para serviços externos.
+- **Testes End-to-End (E2E)**: Foco em `web`, simulando a jornada completa do usuário (Cypress/Playwright).
+
+> Siga estas práticas em novas features e PRs para manter a consistência e a qualidade do projeto.
 
 ## Fluxo de Camadas
 
@@ -68,39 +71,21 @@ flowchart TD;
   Repos --> APIs["External APIs (Remotive / Supabase)"];
 ```
 
-## Revisão de Arquitetura e SRP (Dezembro 2024)
+## Revisão de Arquitetura
 
-Nós auditamos periodicamente o repositório para garantir que ele continue honrando os princípios documentados acima.
+Nós auditamos periodicamente o repositório para garantir que ele continue honrando os princípios de design e arquitetura documentados. A última revisão resultou nas seguintes melhorias:
 
-### ✅ O que está funcionando bem
+- **Centralização da Lógica de Domínio**: A lógica de deduplicação e filtro de vagas, que estava duplicada, foi extraída para os serviços `JobDeduplicator` e `JobFilterService` no pacote `core`.
+- **Separação de Responsabilidades (SRP) nas Factories**: A `JobRepoFactory` foi dividida. Agora, `JobRepoFactory` cria apenas repositórios simples, enquanto a nova `AggregateRepoFactory` lida com a criação de repositórios agregados.
+- **Segurança de Tipos (Type Safety)**: Uma refatoração completa eliminou o uso de `any` em toda a aplicação `web`, fortalecendo a robustez do código.
+- **Configuração de Ferramentas (Tooling)**: O ESLint e o Prettier foram configurados para funcionar de forma coesa no monorepo, garantindo a aplicação consistente de padrões de código.
 
-1. **Single-Responsibility Principle (SRP)**  
-   • `packages/core` mantém somente entidade/VO e contratos.  
-   • `packages/application` apenas orquestra casos de uso.  
-   • `packages/infra` contém detalhes de integração externos.  
-   • `apps/web` concentra UI + BFF embutido (Route Handlers).  
-   Cada diretório tem um motivo único para mudar.
-2. **Camadas protegidas**  
-   `eslint-plugin-boundaries` impede dependências ilegais (ex.: infra → web).  
-   Alias de paths claros (`@remote-dev-jobs/*`).
-3. **Clean-Code rules**  
-   – Funções curtas (<20 linhas) e claras.  
-   – Convenção `verboSubstantivo` nos métodos (`toggleFavorite`, `listAll`).  
-   – Sem _utils_ genéricos; `lib/` está restrito ao domínio de UI.
-4. **Pirâmide de Teste**  
-   – Contrato de repositório no core.  
-   – Testes unitários no core/application.  
-   – Infra possui integração mock (Remotive).  
-   – Web focará em E2E.
+### Próximos Passos e Oportunidades
 
-### 🚧 Oportunidades de melhoria
-
-1. **Coverage** – adicionar métricas de cobertura no CI para core/application.
-2. **Naming** – padronizar textos i18n já no início para evitar literais.
-3. **Error handling** – centralizar mappers de erro em infra para não vazar detalhes externos.
-4. **Domain events** – avaliar necessidade quando favoritos persistirem em Supabase.
-
-> Próxima revisão arquitetural planejada após introdução de autenticação real e favoritos em Supabase.
+- **Cobertura de Testes**: Adicionar métricas de cobertura de testes no CI, especialmente para os pacotes `core` e `application`.
+- **Centralização de Erros**: Criar mappers de erro no pacote `infra` para evitar o vazamento de detalhes de implementação para as camadas superiores.
+- **Eventos de Domínio**: Avaliar a introdução de eventos de domínio para funcionalidades futuras, como a persistência de favoritos de usuários.
+- **Autenticação**: Implementar um fluxo de autenticação completo com Supabase.
 
 ## Por que este repositório é um Boilerplate completo?
 
@@ -120,40 +105,70 @@ Este projeto serve como ponto de partida para qualquer aplicação full-stack Ne
 
 ## Arquitetura
 
+A estrutura do monorepo é dividida em pacotes (`packages`) e aplicações (`apps`), com responsabilidades bem definidas:
+
 ```
 packages/
-  core        – Entidades e contratos (Job, JobRepository)
-  application – Casos de uso (GetJobs)
-  infra       – Adaptadores externos (RemotiveRepo, ArbeitnowRepo, GreenhouseRepo, LeverRepo, AggregateJobRepo)
-  ui          – Componentes compartilhados (JobCard, JobList, Button)
+  core        – Entidades, Value Objects e contratos (interfaces) do domínio. Ex: Job, JobRepository.
+  application – Casos de uso que orquestram a lógica de negócio. Ex: GetJobs, GetJobDetails.
+  infra       – Implementações concretas de interfaces do core. Ex: RemotiveRepo, AggregateJobRepo, JobRepoFactory.
+  ui          – Componentes React compartilhados para a UI. Ex: JobCard, Button.
+  config      – Configurações compartilhadas de ESLint e Prettier.
 apps/
-  web         – BFF + UI Next.js (rota /api/jobs, páginas, tailwind)
+  web         – Aplicação Next.js com UI e um Backend-for-Frontend (BFF) usando Route Handlers.
 ```
 
-### Fluxo
+### Fluxo de Dados (Exemplo: Busca de Vagas)
 
-1. UI chama `/api/jobs` (BFF).
-2. A rota usa `getJobsFactory` → `GetJobs`.
-3. `GetJobs` consulta `AggregateJobRepo`, que reúne dados dos repositórios individuais.
-4. Resposta deduplicada é devolvida para a UI.
+1.  A página (`JobsSection`) renderiza os filtros e, quando alterados, chama uma ação na store do Zustand (`useJobsStore`).
+2.  A ação na store dispara uma requisição para a API interna do Next.js (ex: `/api/jobs`).
+3.  O Route Handler (`/api/jobs/route.ts`) atua como um BFF:
+    a. Utiliza a `getJobsFactory` para criar uma instância do caso de uso `GetJobs`.
+    b. A factory, por sua vez, usa a `AggregateRepoFactory` para montar um repositório agregado com todas as fontes de vagas ativas.
+4.  O caso de uso `GetJobs` executa a busca, utilizando os serviços de domínio `JobFilterService` e `JobDeduplicator` para processar os resultados.
+5.  A resposta final é retornada para a store, que atualiza a UI.
 
 ### Execução local
 
 ```bash
+# 1. Instalar dependências
 pnpm install
-pnpm turbo run build # compila pacotes
-pnpm --filter web dev   # inicia Next.js
+
+# 2. Configurar variáveis de ambiente (opcional)
+cp .env.example .env
+# Edite o arquivo .env e adicione sua JSEARCH_API_KEY
+
+# 3. Compilar todos os pacotes
+pnpm turbo run build
+
+# 4. Iniciar a aplicação web em modo de desenvolvimento
+pnpm --filter web dev
 ```
+
+### Configuração de APIs
+
+Para usar a funcionalidade de IA com JSearch:
+
+1. **Obtenha uma API key gratuita** em [RapidAPI JSearch](https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch)
+2. **Crie um arquivo `.env`** na raiz do projeto
+3. **Adicione sua API key**: `JSEARCH_API_KEY=sua_chave_aqui`
+
+A aplicação funcionará normalmente sem a API key, mas sem a funcionalidade de IA.
 
 ### Funcionalidades Principais
 
 #### 🔍 Filtros Inteligentes
 
-- **Por tecnologia**: React, Node.js, Python, etc.
-- **Por senioridade**: Junior, Pleno, Sênior
-- **Por localização**: Brasil, Remoto, Híbrido
-- **Por empresa**: Filtro por nome da empresa
-- **Por fonte**: APIs, Scrapers, Comunidade
+- **Por palavra-chave**: Cargo, empresa, tecnologia, etc.
+- **Por tipo de trabalho**: Remoto, Presencial, Híbrido.
+- **Por data de publicação**: Últimas 24h, semana, mês.
+
+#### 🤖 IA Integrada
+
+- **JSearch API**: Busca inteligente usando GPT-3 + BERT em múltiplas plataformas
+- **Dados estruturados**: Informações extraídas automaticamente (skills, benefícios, salário)
+- **Filtros automáticos**: Apenas vagas remotas retornadas
+- **200 requests/mês gratuitos** no plano Basic da RapidAPI
 
 #### ⚡ Performance Otimizada
 
@@ -164,12 +179,13 @@ pnpm --filter web dev   # inicia Next.js
 
 #### 🛡️ Anti-Rate Limiting
 
-- **Sincronização inteligente**: SSR popula cache, front-end só lê localmente
-- **Fallback robusto**: Em caso de erro, usa dados em cache
-- **Controle granular**: Rate limit configurável por fonte
+- **Sincronização inteligente**: O cache é populado de forma controlada para evitar bloqueios.
+- **Fallback robusto**: Em caso de erro, a aplicação pode usar dados de um cache local (IndexedDB).
+- **Controle granular**: O rate limit é configurável por fonte de dados.
 
 ### Filtros disponíveis
 
-`/api/jobs?stack=react&seniority=senior&location=brazil`
+Exemplo de uma URL com filtros:
+`/api/jobs?q=react&workType=remote&datePosted=7`
 
 ---
