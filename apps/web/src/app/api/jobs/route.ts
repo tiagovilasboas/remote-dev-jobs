@@ -16,5 +16,13 @@ export async function GET(req: NextRequest) {
   const pageNum = Number(filters.page);
   const sizeNum = Number(filters.pageSize);
   const { items, total } = await getJobsFactory().execute(filters, { page: pageNum || 1, pageSize: sizeNum || 20 });
+
+  const id = searchParams.get('id');
+  if (id) {
+    const { items } = await getJobsFactory().execute({ location: 'brazil' }, { pageSize: 1000 });
+    const job = items.find((j: any) => j.id === id || j.id?.value === id);
+    return job ? NextResponse.json(job) : NextResponse.json({ message: 'Not found' }, { status: 404 });
+  }
+
   return NextResponse.json({ items, total, page: pageNum || 1, pageSize: sizeNum || 20 });
 } 
