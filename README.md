@@ -39,7 +39,7 @@ Use-o como ponto de partida em novos projetos ou como vitrine do que já dominam
    • web → application
 🔹 Alias de importação:
    • `@/*` → `apps/web/src/*`
-   • `@remote-dev-jobs/<pkg>` ou `@tiago/<pkg>` → `packages/<pkg>/` (aliases duplicados para transição)
+   • `@remote-dev-jobs/<pkg>` → `packages/<pkg>/`
 🔹 Segurança: middleware `@next-safe/middleware` com CSP básico.
 🔹 Lint extra: `eslint-plugin-unused-imports`, `prettier-plugin-tailwindcss`.
 🔹 Pirâmide de testes:
@@ -74,7 +74,7 @@ Nós auditamos periodicamente o repositório para garantir que ele continue honr
    Cada diretório tem um motivo único para mudar.
 2. **Camadas protegidas**  
    `eslint-plugin-boundaries` impede dependências ilegais (ex.: infra → web).  
-   Alias de paths claros (`@remote-dev-jobs/*`, `@tiago/*`).
+   Alias de paths claros (`@remote-dev-jobs/*`).
 3. **Clean-Code rules**  
    – Funções curtas (<20 linhas) e claras.  
    – Convenção `verboSubstantivo` nos métodos (`toggleFavorite`, `listAll`).  
