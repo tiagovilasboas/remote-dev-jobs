@@ -11,4 +11,5 @@ export const getJobsFactory = () =>
     ]),
   );
 
-export { GetJobs } from './GetJobs'; 
+export { GetJobs } from './GetJobs';
+export { GetJobsFilters } from './GetJobs'; 
