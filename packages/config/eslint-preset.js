@@ -1,16 +1,23 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'boundaries', 'unused-imports'],
+  plugins: [
+    '@typescript-eslint',
+    'react',
+    'react-hooks',
+    'boundaries',
+    'unused-imports',
+  ],
   extends: [
     'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
-    'prettier'
+    'plugin:prettier/recommended',
   ],
   settings: {
     react: {
-      version: 'detect'
+      version: 'detect',
     },
     'boundaries/elements': [
       { type: 'core', pattern: 'packages/core/src/**' },
@@ -38,5 +45,5 @@ module.exports = {
       },
     ],
     'unused-imports/no-unused-imports': 'warn',
-  }
-}; 
+  },
+};
