@@ -19,6 +19,7 @@ export const JobCard = ({ job, href }: Props) => {
           <span>{job.title}</span>
         )}
       </h3>
+      <pre className="mt-1 text-xs text-gray-400 break-all">{JSON.stringify(job.id)}</pre>
       <p className="text-sm text-gray-700">
         {job.company} • {job.location}
       </p>
