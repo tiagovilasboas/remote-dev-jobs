@@ -2,25 +2,22 @@ import { JobItem } from "./JobItem";
 
 interface Props {
   job: JobItem;
-  isSelected?: boolean;
-  onClick?: () => void;
 }
 
-export const JobCard = ({ job, isSelected, onClick }: Props) => {
-  const cardClasses = `block p-4 border-b hover:bg-gray-100 ${
-    isSelected ? "bg-blue-100" : "bg-white"
-  } cursor-pointer`;
-
+export const JobCard = ({ job }: Props) => {
   return (
-    <div className={cardClasses} onClick={onClick}>
-      <h3 className="font-bold text-blue-700">{job.title}</h3>
+    <div className="block p-4 border rounded-lg bg-white hover:bg-gray-50 transition-colors duration-200 shadow-sm">
+      <h3 className="font-bold text-blue-700 hover:text-blue-800">{job.title}</h3>
       <p className="text-gray-800">{job.company}</p>
       <p className="text-sm text-gray-600">{job.location}</p>
       {job.salary && (
         <p className="text-sm font-medium text-gray-600">{job.salary}</p>
       )}
       <p className="mt-2 text-xs text-gray-500">
-        {job.publishedAt.toLocaleDateString()}
+        {job.publishedAt instanceof Date 
+          ? job.publishedAt.toLocaleDateString()
+          : new Date(job.publishedAt).toLocaleDateString()
+        }
       </p>
     </div>
   );
