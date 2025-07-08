@@ -14,7 +14,10 @@ export class JobFilterService {
   /**
    * Filtra jobs baseado nos critérios fornecidos
    */
-  static filterJobs(jobs: Job[], filters: JobFilters): Job[] {
+  static filterJobs(
+    jobs: Job[],
+    filters: JobFilters & { datePosted?: string; workType?: string },
+  ): Job[] {
     return jobs.filter((job) => {
       // Filtro por query (busca em título e empresa)
       if (filters.query && !this.matchesQuery(job, filters.query)) {
@@ -45,7 +48,18 @@ export class JobFilterService {
         return false;
       }
 
-      // Filtro por remoto
+      // Filtro por tipo de trabalho (workType)
+      if (filters.workType) {
+        const type = filters.workType.toLowerCase();
+        if (type === "remote" && !job.location.toLowerCase().includes("remote"))
+          return false;
+        if (type === "on-site" && job.location.toLowerCase().includes("remote"))
+          return false;
+        if (type === "hybrid" && !/hybrid|híbrido/i.test(job.location))
+          return false;
+      }
+
+      // Filtro por remoto (legacy)
       if (filters.remote !== undefined) {
         const isRemote = job.isRemote();
         if (filters.remote && !isRemote) return false;
@@ -68,6 +82,16 @@ export class JobFilterService {
         return false;
       }
 
+      // Filtro por data de publicação (datePosted)
+      if (filters.datePosted) {
+        const days = parseInt(filters.datePosted, 10);
+        if (!isNaN(days)) {
+          const now = new Date();
+          const minDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+          if (job.publishedAt < minDate) return false;
+        }
+      }
+
       return true;
     });
   }
@@ -76,12 +100,17 @@ export class JobFilterService {
    * Verifica se o job corresponde à query de busca
    */
   private static matchesQuery(job: Job, query: string): boolean {
-    const searchText = query.toLowerCase();
-    return [
+    if (!query || query.trim() === "") return true;
+    
+    const searchText = query.toLowerCase().trim();
+    const jobText = [
       job.title.toLowerCase(),
       job.company.toLowerCase(),
       job.location.toLowerCase(),
-    ].some((text) => text.includes(searchText));
+      job.description?.toLowerCase() || "",
+    ].join(" ");
+    
+    return jobText.includes(searchText);
   }
 
   /**
