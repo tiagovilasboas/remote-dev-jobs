@@ -10,7 +10,7 @@ Este projeto nasceu de uma **dor real**: estando **open to work** como desenvolv
 
 ### 🎯 Objetivo Principal
 
-**Filtrar vagas de desenvolvimento** de forma eficiente, agregando dados de **15+ fontes** (APIs e scrapers) em uma única interface, com foco especial em vagas **remotas** e do **mercado brasileiro**.
+**Filtrar vagas de desenvolvimento** de forma eficiente, agregando dados de **diversas fontes** (APIs e scrapers) em uma única interface, com foco especial em vagas **remotas** e do **mercado brasileiro**.
 
 ### 🚀 Como Evoluiu
 
@@ -68,13 +68,17 @@ flowchart TD;
   Store --> Services["Application Services (Use Cases)"];
   Services --> Domain["Domain (Entities / Value Objects)"];
   Services --> Repos["Infra Repositories"];
-  Repos --> APIs["External APIs (Remotive / Supabase)"];
+  Repos --> APIs["Fontes Externas (APIs/Scrapers)"];
 ```
 
-## Revisão de Arquitetura
+## Histórico de Decisões de Arquitetura
 
 Nós auditamos periodicamente o repositório para garantir que ele continue honrando os princípios de design e arquitetura documentados. A última revisão resultou nas seguintes melhorias:
 
+- **Qualidade dos Dados**: Fontes de vagas instáveis ou com dados imprecisos (ex: `Arbeitnow`, `Hipsters.jobs`) foram desativadas para melhorar a relevância dos resultados.
+- **Simplificação da Busca**: A lógica de busca por palavra-chave foi movida do `core` para as fontes de dados, simplificando o domínio.
+- **Correção da UI de Filtros**: O comportamento do filtro de busca foi corrigido para limpar a URL quando o campo é esvaziado.
+- **Gerenciamento de Cache**: Adicionado um endpoint (`/api/cache/clear`) para facilitar a limpeza do cache de vagas durante o desenvolvimento.
 - **Centralização da Lógica de Domínio**: A lógica de deduplicação e filtro de vagas, que estava duplicada, foi extraída para os serviços `JobDeduplicator` e `JobFilterService` no pacote `core`.
 - **Separação de Responsabilidades (SRP) nas Factories**: A `JobRepoFactory` foi dividida. Agora, `JobRepoFactory` cria apenas repositórios simples, enquanto a nova `AggregateRepoFactory` lida com a criação de repositórios agregados.
 - **Segurança de Tipos (Type Safety)**: Uma refatoração completa eliminou o uso de `any` em toda a aplicação `web`, fortalecendo a robustez do código.
