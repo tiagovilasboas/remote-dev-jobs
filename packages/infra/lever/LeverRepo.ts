@@ -3,7 +3,7 @@ import { JobRepository } from '@remote-dev-jobs/core';
 import { fetchLeverJobs, mapToJobProps } from './LeverApi';
 
 export class LeverRepo implements JobRepository {
-  constructor(private readonly companies: string[] = []) {}
+  constructor(private readonly companies: string[] = ['stoneco', 'pismo', 'vtex', 'dellbrasil']) {}
 
   async listAll(): Promise<Job[]> {
     if (this.companies.length === 0) {

@@ -18,9 +18,12 @@ const BoardResponseSchema = z.object({
 export type GreenhouseJob = z.infer<typeof BoardJobSchema>;
 
 const DEFAULT_COMPANIES = [
-  'github',
-  'stripe',
-  'shopify',
+  'nubank',
+  'quintoandar',
+  'wildlife',
+  'gympass',
+  'c6bank',
+  'picpay',
 ];
 
 const fetchCompanyJobs = async (company: string): Promise<GreenhouseJob[]> => {
