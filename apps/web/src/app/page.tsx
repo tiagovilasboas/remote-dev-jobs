@@ -8,7 +8,8 @@ export default async function HomePage({ searchParams }: { searchParams?: { [key
   set('seniority', searchParams?.seniority);
   set('location', searchParams?.location);
   set('query', searchParams?.q);
-  const jobs = await getJobsAction(filters);
+  const pageNum = Number(searchParams?.page ?? '1');
+  const { items, total } = await getJobsAction(filters, { page: pageNum });
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
@@ -28,7 +29,19 @@ export default async function HomePage({ searchParams }: { searchParams?: { [key
           Buscar
         </button>
       </form>
-      <JobList jobs={jobs} />
+      <JobList jobs={items} />
+      <div className="mt-6 flex justify-center gap-4">
+        {pageNum > 1 && (
+          <a href={`/?${new URLSearchParams({ ...filters, page: String(pageNum - 1) }).toString()}`} className="text-blue-600 hover:underline">
+            ← Anterior
+          </a>
+        )}
+        {pageNum * 20 < total && (
+          <a href={`/?${new URLSearchParams({ ...filters, page: String(pageNum + 1) }).toString()}`} className="text-blue-600 hover:underline">
+            Próxima →
+          </a>
+        )}
+      </div>
     </main>
   );
 } 

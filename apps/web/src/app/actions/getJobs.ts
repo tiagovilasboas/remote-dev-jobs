@@ -1,3 +1,6 @@
-import { getJobsFactory, GetJobsFilters } from '@tiago/application/get-jobs';
+import { getJobsFactory, GetJobsFilters, PaginationOptions, GetJobsResult } from '@tiago/application/get-jobs';
 
-export const getJobsAction = async (filters: GetJobsFilters = {}) => getJobsFactory().execute(filters); 
+export const getJobsAction = async (
+  filters: GetJobsFilters = {},
+  pagination: PaginationOptions = {},
+): Promise<GetJobsResult> => getJobsFactory().execute(filters, pagination); 
