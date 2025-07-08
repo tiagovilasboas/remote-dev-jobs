@@ -6,7 +6,7 @@ interface Props {
 }
 
 export const JobCard = ({ job, href }: Props) => {
-  const idStr = typeof job.id === 'string' ? job.id : job.id?.value ?? '';
+  const idStr = typeof job.id === 'string' ? job.id : String(job.id?.value ?? '');
   const finalHref = href ?? (idStr ? `/jobs/${idStr}` : undefined);
   return (
     <div className="rounded border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition">
