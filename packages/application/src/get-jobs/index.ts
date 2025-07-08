@@ -7,7 +7,7 @@ export const getJobsFactory = () =>
       new RemotiveRepo(),
       new ArbeitnowRepo(),
       new GreenhouseRepo(),
-      new LeverRepo(['github', 'stripe', 'shopify']),
+      new LeverRepo(),
     ]),
   );
 

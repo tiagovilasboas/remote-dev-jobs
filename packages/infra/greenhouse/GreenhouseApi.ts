@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { JobProps } from '@remote-dev-jobs/core/jobs/Job';
+import { GREENHOUSE_BR_COMPANIES } from '../brCompanies';
 
 const BoardJobSchema = z.object({
   id: z.number(),
@@ -17,14 +18,7 @@ const BoardResponseSchema = z.object({
 
 export type GreenhouseJob = z.infer<typeof BoardJobSchema>;
 
-const DEFAULT_COMPANIES = [
-  'nubank',
-  'quintoandar',
-  'wildlife',
-  'gympass',
-  'c6bank',
-  'picpay',
-];
+const DEFAULT_COMPANIES = GREENHOUSE_BR_COMPANIES;
 
 const fetchCompanyJobs = async (company: string): Promise<GreenhouseJob[]> => {
   const url = `https://boards-api.greenhouse.io/v1/boards/${company}/jobs`;
