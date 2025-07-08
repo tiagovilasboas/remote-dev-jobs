@@ -2,7 +2,7 @@ import { Job, JobId } from '@remote-dev-jobs/core';
 import { JobRepository } from '@remote-dev-jobs/core';
 import { fetchGreenhouseJobs, mapToJobProps } from './GreenhouseApi';
 
-const COMPANY_NAME_FROM_URL = /https?:\/\/boards\.greenhouse\.io\/v1\/boards\/([a-z0-9-]+)\//i;
+const COMPANY_NAME_FROM_URL = /https?:\/\/boards\.greenhouse\.io\/(?:embed\/)?([a-z0-9-]+)/i;
 
 export class GreenhouseRepo implements JobRepository {
   constructor(private readonly companies: string[] = []) {}
