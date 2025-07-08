@@ -1,6 +1,6 @@
 # Remote Dev Jobs – Monorepo (Turbo + pnpm)
 
-> **Heads-up**: the generic, domain-agnostic boilerplate can be found in the **`boilerplate`** branch. The `main` branch you are reading now contains a sample implementation for the Remote-Dev-Jobs domain.
+> **Atenção**: o boilerplate genérico e independente de domínio está na **`boilerplate`** branch. A branch `main` que você está lendo agora contém uma implementação de exemplo para o domínio Remote-Dev-Jobs.
 
 +[![PWA Ready](https://img.shields.io/badge/PWA-ready-brightgreen)](https://web.dev/measure/) [![i18n Ready](https://img.shields.io/badge/i18n-ready-blue)]() [![Unlighthouse ≥95](https://img.shields.io/badge/Unlighthouse-%E2%89%A595-success)]()
 
@@ -49,11 +49,11 @@ flowchart TD;
   Repos --> APIs["External APIs (Remotive / Supabase)"];
 ``` 
 
-## Architecture & SRP Review (May 2025)
+## Revisão de Arquitetura e SRP (Maio 2025)
 
-We periodically audit the codebase to ensure it still honours the principles documented above.
+Nós auditamos periodicamente o repositório para garantir que ele continue honrando os princípios documentados acima.
 
-### ✅ What's working well
+### ✅ O que está funcionando bem
 1. **Single-Responsibility Principle (SRP)**  
    • `packages/core` mantém somente entidade/VO e contratos.  
    • `packages/application` apenas orquestra casos de uso.  
@@ -67,9 +67,9 @@ We periodically audit the codebase to ensure it still honours the principles doc
    – Funções curtas (<20 linhas) e claras.  
    – Convenção `verboSubstantivo` nos métodos (`toggleFavorite`, `listAll`).  
    – Sem *utils* genéricos; `lib/` está restrito ao domínio de UI.
-4. **Test Pyramid**  
+4. **Pirâmide de Teste**  
    – Contrato de repositório no core.  
-   – Unit tests no core/application.  
+   – Testes unitários no core/application.  
    – Infra possui integração mock (Remotive).  
    – Web focará em E2E.
 
