@@ -2,6 +2,7 @@ import { Job } from './Job';
 import { JobId } from './JobId';
 
 export interface JobRepository {
+  source: string;
   listAll(): Promise<Job[]>;
-  findById(id: JobId): Promise<Job | null>;
+  getById(id: string): Promise<Job | null>;
 } 
