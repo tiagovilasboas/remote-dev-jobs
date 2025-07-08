@@ -3,22 +3,24 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@remote-dev-jobs/ui": "workspace:*",
     "autoprefixer": "^10.4.14",
+    "kill-port": "^2.0.1",
     "next": "14.2.4",
     "postcss": "^8.4.27",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tailwindcss": "^3.4.2",
-    "@remote-dev-jobs/ui": "workspace:*",
-    "kill-port": "^2.0.1"
+    "use-debounce": "^10.0.5"
   },
   "devDependencies": {
+    "@remote-dev-jobs/config": "workspace:*",
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/node": "^20.10.5",
     "@types/react": "^18.2.24",
     "@types/react-dom": "^18.2.17",
-    "@types/node": "^20.10.5",
-    "typescript": "^5.3.3",
-    "@remote-dev-jobs/config": "workspace:*",
-    "kill-port": "^2.0.1"
+    "kill-port": "^2.0.1",
+    "typescript": "^5.3.3"
   },
   "scripts": {
     "dev": "kill-port 3000 && next dev -p 3000",
@@ -27,4 +29,4 @@
     "lint": "next lint",
     "test": "jest -c ../../jest.config.js --passWithNoTests"
   }
-} 
+}

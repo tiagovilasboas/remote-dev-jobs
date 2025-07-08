@@ -7,7 +7,7 @@ interface Props {
 
 export default async function JobRedirectPage({ params }: Props) {
   const jobs = await getJobsAction();
-  const job = jobs.find(j => j.id.value === params.id);
+  const job = jobs.items.find(j => j.id.value === params.id);
   if (!job) {
     notFound();
   }
