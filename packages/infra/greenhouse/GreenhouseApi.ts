@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import { JobProps } from '@remote-dev-jobs/core/jobs/Job';
 import {
   GREENHOUSE_BR_COMPANIES,
   GreenhouseCompanyBR,
   getEnumKeyByEnumValue,
-} from '../brCompanies';
+} from "../brCompanies";
+import { JobProps } from "@remote-dev-jobs/core/jobs/Job";
+import { z } from "zod";
 
 const BoardJobSchema = z.object({
   id: z.number(),
@@ -46,7 +46,7 @@ const fetchCompanyJobs = async (
   return { company, jobs: parsed.jobs };
 };
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const fetchGreenhouseJobs = async (
   companies: string[] = DEFAULT_COMPANIES,
@@ -54,7 +54,7 @@ export const fetchGreenhouseJobs = async (
   const allJobs: (GreenhouseJob & { company: string })[] = [];
   for (const company of companies) {
     const result = await fetchCompanyJobs(company);
-    result.jobs.forEach(job =>
+    result.jobs.forEach((job) =>
       allJobs.push({ ...job, company: result.company }),
     );
     await delay(500); // 500ms delay to avoid rate limiting
@@ -65,7 +65,7 @@ export const fetchGreenhouseJobs = async (
 export const fetchGreenhouseJobById = async (
   id: string,
 ): Promise<(GreenhouseJobWithDetails & { company: string }) | null> => {
-  const [company, jobId] = id.split('::');
+  const [company, jobId] = id.split("::");
   if (!company || !jobId) return null;
 
   const url = `https://boards-api.greenhouse.io/v1/boards/${company}/jobs/${jobId}`;
@@ -88,13 +88,13 @@ export const mapToJobProps = (
   gj: (GreenhouseJob | GreenhouseJobWithDetails) & { company: string },
 ): JobProps => {
   const companyName =
-    getEnumKeyByEnumValue(GreenhouseCompanyBR, gj.company) ?? 'Unknown';
+    getEnumKeyByEnumValue(GreenhouseCompanyBR, gj.company) ?? "Unknown";
 
   const normalizeLocation = (location: string): string => {
     const lower = location.toLowerCase();
-    if (lower.includes('são paulo') || lower.includes('sao paulo'))
-      return 'São Paulo, Brazil';
-    if (lower.includes('brazil') || lower.includes('brasil')) return 'Brazil';
+    if (lower.includes("são paulo") || lower.includes("sao paulo"))
+      return "São Paulo, Brazil";
+    if (lower.includes("brazil") || lower.includes("brasil")) return "Brazil";
     return location;
   };
 
@@ -102,10 +102,10 @@ export const mapToJobProps = (
     id: `greenhouse::${gj.company}::${gj.id}`,
     title: gj.title.trim(),
     company: companyName,
-    location: normalizeLocation(gj.location.name ?? 'Remote'),
+    location: normalizeLocation(gj.location.name ?? "Remote"),
     url: gj.absolute_url,
     salary: undefined,
     publishedAt: new Date(gj.updated_at),
     description: gj.content,
   };
-}; 
+};

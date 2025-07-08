@@ -17,5 +17,7 @@
     "@types/node": "^20.10.5",
     "typescript": "^5.3.3"
   },
-  "dependencies": { "@remote-dev-jobs/core": "workspace:*" }
-} 
+  "dependencies": {
+    "@remote-dev-jobs/core": "workspace:*"
+  }
+}

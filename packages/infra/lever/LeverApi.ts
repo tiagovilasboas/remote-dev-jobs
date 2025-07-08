@@ -1,10 +1,10 @@
-import { z } from 'zod';
-import { JobProps } from '@remote-dev-jobs/core/jobs/Job';
 import {
   LeverCompanyBR,
   getEnumKeyByEnumValue,
   LEVER_BR_COMPANIES,
-} from '../brCompanies';
+} from "../brCompanies";
+import { JobProps } from "@remote-dev-jobs/core/jobs/Job";
+import { z } from "zod";
 
 const LeverJobSchema = z.object({
   id: z.string(),
@@ -34,26 +34,25 @@ export const fetchLeverJobs = async (
   companies: string[] = LEVER_BR_COMPANIES,
 ): Promise<(LeverJob & { company: string })[]> => {
   const results = await Promise.all(
-    companies.map(async company => ({
+    companies.map(async (company) => ({
       company,
       jobs: await fetchCompanyJobs(company),
     })),
   );
-  return results.flatMap(result =>
-    result.jobs.map(job => ({ ...job, company: result.company })),
+  return results.flatMap((result) =>
+    result.jobs.map((job) => ({ ...job, company: result.company })),
   );
 };
 
-export const mapToJobProps = (
-  lj: LeverJob & { company: string },
-): JobProps => {
-  const companyName = getEnumKeyByEnumValue(LeverCompanyBR, lj.company) ?? 'Unknown';
+export const mapToJobProps = (lj: LeverJob & { company: string }): JobProps => {
+  const companyName =
+    getEnumKeyByEnumValue(LeverCompanyBR, lj.company) ?? "Unknown";
 
   const normalizeLocation = (location: string): string => {
     const lower = location.toLowerCase();
-    if (lower.includes('são paulo') || lower.includes('sao paulo'))
-      return 'São Paulo, Brazil';
-    if (lower.includes('brazil') || lower.includes('brasil')) return 'Brazil';
+    if (lower.includes("são paulo") || lower.includes("sao paulo"))
+      return "São Paulo, Brazil";
+    if (lower.includes("brazil") || lower.includes("brasil")) return "Brazil";
     return location;
   };
 
@@ -61,9 +60,9 @@ export const mapToJobProps = (
     id: lj.id,
     title: lj.text.trim(),
     company: companyName,
-    location: normalizeLocation(lj.categories.location ?? 'Remote'),
+    location: normalizeLocation(lj.categories.location ?? "Remote"),
     salary: undefined,
     url: lj.hostedUrl,
     publishedAt: new Date(lj.createdAt),
   };
-}; 
+};

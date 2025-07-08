@@ -1,22 +1,25 @@
-import { JobItem } from './JobItem';
+import { JobItem } from "./JobItem";
 
 interface Props {
   job: JobItem;
   isSelected?: boolean;
+  onClick?: () => void;
 }
 
-export const JobCard = ({ job, isSelected }: Props) => {
-  const cardClasses = `block p-4 border-b hover:bg-gray-100 ${isSelected ? 'bg-blue-100' : 'bg-white'}`;
+export const JobCard = ({ job, isSelected, onClick }: Props) => {
+  const cardClasses = `block p-4 border-b hover:bg-gray-100 ${
+    isSelected ? "bg-blue-100" : "bg-white"
+  } cursor-pointer`;
 
   return (
-    <div className={cardClasses}>
+    <div className={cardClasses} onClick={onClick}>
       <h3 className="font-bold text-blue-700">{job.title}</h3>
       <p className="text-gray-800">{job.company}</p>
       <p className="text-sm text-gray-600">{job.location}</p>
       {job.salary && (
-        <p className="text-sm text-gray-600 font-medium">{job.salary}</p>
+        <p className="text-sm font-medium text-gray-600">{job.salary}</p>
       )}
-      <p className="text-xs text-gray-500 mt-2">
+      <p className="mt-2 text-xs text-gray-500">
         {job.publishedAt.toLocaleDateString()}
       </p>
     </div>
@@ -24,9 +27,9 @@ export const JobCard = ({ job, isSelected }: Props) => {
 };
 
 export const JobCardSkeleton = () => (
-  <div className="rounded border border-gray-200 bg-white p-4 shadow-sm animate-pulse">
+  <div className="animate-pulse rounded border border-gray-200 bg-white p-4 shadow-sm">
     <div className="h-4 w-3/4 rounded bg-gray-200" />
     <div className="mt-2 h-3 w-1/2 rounded bg-gray-200" />
     <div className="mt-4 h-3 w-1/3 rounded bg-gray-200" />
   </div>
-); 
+);

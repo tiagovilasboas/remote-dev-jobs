@@ -1,30 +1,32 @@
-import { nextSafe } from '@next-safe/middleware';
-import { isRateLimited } from './lib/rateLimiter';
-import { NextRequest, NextResponse } from 'next/server';
+import { isRateLimited } from "./lib/rateLimiter";
+import { nextSafe } from "@next-safe/middleware";
+import { NextRequest, NextResponse } from "next/server";
 
-const isDev = process.env.NODE_ENV !== 'production';
+const isDev = process.env.NODE_ENV !== "production";
+
+type NextMiddleware = (req: NextRequest) => NextResponse;
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-const middlewareConfig = nextSafe({
+const middlewareConfig: NextMiddleware = nextSafe({
   contentSecurityPolicy: {
-    'script-src': [
+    "script-src": [
       "'self'",
       "'unsafe-inline'",
       ...(isDev ? ["'unsafe-eval'"] : []),
-      'https://www.googletagmanager.com',
+      "https://www.googletagmanager.com",
     ],
   },
-});
+}) as NextMiddleware;
 
 // Next.js espera exportação chamada `middleware`
 export function middleware(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for') || req.ip || 'unknown';
-  if (req.nextUrl.pathname.startsWith('/api/jobs') && isRateLimited(ip)) {
-    return new NextResponse('Too Many Requests', { status: 429 });
+  const ip = req.headers.get("x-forwarded-for") || req.ip || "unknown";
+  if (req.nextUrl.pathname.startsWith("/api/jobs") && isRateLimited(ip)) {
+    return new NextResponse("Too Many Requests", { status: 429 });
   }
-  return (middlewareConfig as any)(req);
+  return middlewareConfig(req);
 }
 
 export const config = {
-  matcher: '/(.*)',
-}; 
+  matcher: "/(.*)",
+};

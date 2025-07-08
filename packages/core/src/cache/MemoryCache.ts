@@ -1,4 +1,4 @@
-import { Cache, CacheOptions } from './Cache';
+import { Cache, CacheOptions } from "./Cache";
 
 interface CacheEntry<T> {
   value: T;
@@ -12,7 +12,7 @@ export class MemoryCache implements Cache {
 
   constructor(options: CacheOptions = {}) {
     this.defaultTtlSeconds = options.ttlSeconds ?? 300; // 5 minutos padrão
-    this.prefix = options.prefix ?? '';
+    this.prefix = options.prefix ?? "";
   }
 
   private getKey(key: string): string {
@@ -22,7 +22,7 @@ export class MemoryCache implements Cache {
   async get<T>(key: string): Promise<T | null> {
     const fullKey = this.getKey(key);
     const entry = this.cache.get(fullKey);
-    
+
     if (!entry) {
       return null;
     }
@@ -38,7 +38,7 @@ export class MemoryCache implements Cache {
   async set<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
     const fullKey = this.getKey(key);
     const ttl = ttlSeconds ?? this.defaultTtlSeconds;
-    const expiresAt = Date.now() + (ttl * 1000);
+    const expiresAt = Date.now() + ttl * 1000;
 
     this.cache.set(fullKey, { value, expiresAt });
   }
@@ -66,4 +66,4 @@ export class MemoryCache implements Cache {
   startCleanup(intervalMs: number = 60000): void {
     setInterval(() => this.cleanup(), intervalMs);
   }
-} 
+}

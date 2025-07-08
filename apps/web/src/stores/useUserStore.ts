@@ -1,49 +1,54 @@
-// @ts-nocheck
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { immer } from "zustand/middleware/immer";
 
-import { create } from 'zustand';
-import { immer } from 'zustand/middleware/immer';
-import { persist, createJSONStorage } from 'zustand/middleware';
-
+// Definição da interface User
 export interface User {
   id: string;
   name: string;
-  favorites: string[];
 }
 
-export interface UserStore {
+// Definição do estado da store
+export interface UserState {
   user: User | null;
+  favorites: string[];
+  isLoggedIn: boolean;
+}
+
+// Definição das ações da store
+export interface UserActions {
   login: (user: User) => void;
   logout: () => void;
   toggleFavorite: (jobId: string) => void;
 }
 
-const baseStore = immer<UserStore>((set) => ({
-  user: null,
-  login: (user) =>
-    set((state) => {
-      state.user = { ...user };
-    }),
-  logout: () =>
-    set((state) => {
-      state.user = null;
-    }),
-  toggleFavorite: (jobId) =>
-    set((state) => {
-      if (!state.user) return;
-      const idx = state.user.favorites.indexOf(jobId);
-      if (idx >= 0) state.user.favorites.splice(idx, 1);
-      else state.user.favorites.push(jobId);
-    }),
-}));
+// Combinação de estado e ações para a store completa
+export type UserStore = UserState & UserActions;
 
-const isBrowser = typeof window !== 'undefined';
-
+// Criação da store com os middlewares
 export const useUserStore = create<UserStore>()(
-  isBrowser
-    ? persist(baseStore, {
-        name: 'user-store',
+  immer(
+    persist(
+      (set) => ({
+        user: null,
+        favorites: [],
+        isLoggedIn: false,
+        login: (user) => set({ user, isLoggedIn: true }),
+        logout: () => set({ user: null, isLoggedIn: false }),
+        toggleFavorite: (jobId) =>
+          set((state) => {
+            const index = state.favorites.indexOf(jobId);
+            if (index === -1) {
+              state.favorites.push(jobId);
+            } else {
+              state.favorites.splice(index, 1);
+            }
+          }),
+      }),
+      {
+        name: "user-store",
         storage: createJSONStorage(() => localStorage),
-        partialize: (state) => ({ user: state.user }),
-      })
-    : baseStore,
-); 
+      },
+    ),
+  ),
+);

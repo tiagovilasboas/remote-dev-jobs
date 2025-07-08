@@ -15,4 +15,4 @@ export const isRateLimited = (key: string): boolean => {
   }
   entry.count += 1;
   return false;
-}; 
+};

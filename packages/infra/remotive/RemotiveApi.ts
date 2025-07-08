@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { JobProps } from '@remote-dev-jobs/core/jobs/Job';
+import { JobProps } from "@remote-dev-jobs/core/jobs/Job";
+import { z } from "zod";
 
 const RemotiveJobSchema = z.object({
   id: z.number(),
@@ -19,7 +19,7 @@ const RemotiveResponseSchema = z.object({
 export type RemotiveJob = z.infer<typeof RemotiveJobSchema>;
 
 export const fetchRemotiveJobs = async (): Promise<RemotiveJob[]> => {
-  const resp = await fetch('https://remotive.com/api/remote-jobs');
+  const resp = await fetch("https://remotive.com/api/remote-jobs");
   if (!resp.ok) {
     throw new Error(`Remotive API error: ${resp.status}`);
   }
@@ -31,9 +31,9 @@ export const fetchRemotiveJobs = async (): Promise<RemotiveJob[]> => {
 export const mapToJobProps = (rj: RemotiveJob): JobProps => {
   const normalizeLocation = (location: string): string => {
     const lower = location.toLowerCase();
-    if (lower.includes('são paulo') || lower.includes('sao paulo'))
-      return 'São Paulo, Brazil';
-    if (lower.includes('brazil') || lower.includes('brasil')) return 'Brazil';
+    if (lower.includes("são paulo") || lower.includes("sao paulo"))
+      return "São Paulo, Brazil";
+    if (lower.includes("brazil") || lower.includes("brasil")) return "Brazil";
     return location;
   };
 
@@ -41,10 +41,10 @@ export const mapToJobProps = (rj: RemotiveJob): JobProps => {
     id: `remotive::${rj.id}`,
     title: rj.title.trim(),
     company: rj.company_name,
-    location: normalizeLocation(rj.candidate_required_location ?? 'Remote'),
+    location: normalizeLocation(rj.candidate_required_location ?? "Remote"),
     salary: rj.salary ?? undefined,
     url: rj.url,
     publishedAt: new Date(rj.publication_date),
     description: rj.description,
   };
-}; 
+};

@@ -1,4 +1,4 @@
-import { nextCache } from './cache';
+import { nextCache } from "./cache";
 
 export class CacheManager {
   static async invalidateJobsCache(): Promise<void> {
@@ -27,7 +27,7 @@ export class CacheManager {
     // Em uma implementação real, você teria acesso às estatísticas do cache
     return {
       totalEntries: 0,
-      memoryUsage: 0
+      memoryUsage: 0,
     };
   }
-} 
+}

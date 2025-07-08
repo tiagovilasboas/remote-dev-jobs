@@ -1,16 +1,14 @@
-import { defineConfig } from 'unlighthouse';
+import { defineConfig } from "unlighthouse";
 
 export default defineConfig({
-  site: 'http://localhost:3000',
+  site: "http://localhost:3000",
   scans: {
     sitemap: false,
     robotsTxt: false,
-    pages: [
-      '/',
-    ],
+    pages: ["/"],
   },
   lighthouseOptions: {
-    onlyCategories: ['performance', 'accessibility', 'best-practices', 'seo'],
+    onlyCategories: ["performance", "accessibility", "best-practices", "seo"],
   },
-  outputPath: '.unlighthouse',
-}); 
+  outputPath: ".unlighthouse",
+});

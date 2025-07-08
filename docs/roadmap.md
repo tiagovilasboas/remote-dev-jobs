@@ -46,4 +46,4 @@ flowchart TD
 - [ ] **Escrever testes unitários** para `AggregateJobRepo` e deduplicação
 - [ ] **Escrever testes de integração** para cada adaptador chamando API mockada
 - [ ] **Configurar cache ISR e rate-limit** no BFF Next.js
-- [ ] **Atualizar documentação** (README e ADRs) com novas integrações e arquitetura 
+- [ ] **Atualizar documentação** (README e ADRs) com novas integrações e arquitetura

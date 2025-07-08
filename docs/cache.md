@@ -54,10 +54,10 @@ O cache é aplicado automaticamente em:
 #### Invalidar Cache
 
 ```typescript
-import { CacheManager } from '@/lib/cacheUtils';
+import { CacheManager } from "@/lib/cacheUtils";
 
 // Invalidar cache de um job específico
-await CacheManager.invalidateJobCache('job-id');
+await CacheManager.invalidateJobCache("job-id");
 
 // Invalidar cache de todos os jobs
 await CacheManager.invalidateJobsCache();
@@ -107,4 +107,4 @@ O cache em memória é adequado para desenvolvimento e pequenas aplicações. Pa
 2. **Cache warming**: Pré-carregar dados frequentemente acessados
 3. **Métricas**: Adicionar monitoramento detalhado do cache
 4. **TTL dinâmico**: Ajustar TTL baseado na frequência de acesso
-5. **Cache tags**: Implementar sistema de tags para invalidação seletiva 
+5. **Cache tags**: Implementar sistema de tags para invalidação seletiva

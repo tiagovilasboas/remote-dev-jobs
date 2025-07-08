@@ -1,20 +1,22 @@
-import { z } from 'zod';
-import { JobProps } from '@remote-dev-jobs/core/jobs/Job';
 import {
   WORKABLE_BR_COMPANIES,
   WorkableCompanyBR,
   getEnumKeyByEnumValue,
-} from '../brCompanies';
+} from "../brCompanies";
+import { JobProps } from "@remote-dev-jobs/core/jobs/Job";
+import { z } from "zod";
 
 const WorkableJobSchema = z.object({
   id: z.string(),
   title: z.string(),
   created_at: z.string(),
   full_title: z.string().optional(),
-  location: z.object({
-    city: z.string().optional().nullable(),
-    country: z.string().optional().nullable(),
-  }).optional(),
+  location: z
+    .object({
+      city: z.string().optional().nullable(),
+      country: z.string().optional().nullable(),
+    })
+    .optional(),
   url: z.string().url(),
   description: z.string().optional(),
 });
@@ -49,7 +51,7 @@ const fetchCompanyJobs = async (company: string): Promise<WorkableJob[]> => {
     }
     return jobs;
   } catch (err) {
-    console.warn('[Workable] fetch failed', err);
+    console.warn("[Workable] fetch failed", err);
     return [];
   }
 };
@@ -57,7 +59,7 @@ const fetchCompanyJobs = async (company: string): Promise<WorkableJob[]> => {
 export const fetchWorkableJobById = async (
   id: string,
 ): Promise<(WorkableJobWithDetails & { company: string }) | null> => {
-  const [company, jobId] = id.split('::');
+  const [company, jobId] = id.split("::");
   if (!company || !jobId) return null;
 
   // The public API is different from the one used for listings
@@ -77,7 +79,7 @@ export const fetchWorkableJobById = async (
   }
 };
 
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const fetchWorkableJobs = async (
   companies: string[] = WORKABLE_BR_COMPANIES,
@@ -85,7 +87,7 @@ export const fetchWorkableJobs = async (
   const allJobs: (WorkableJob & { company: string })[] = [];
   for (const company of companies) {
     const jobs = await fetchCompanyJobs(company);
-    jobs.forEach(job => allJobs.push({ ...job, company }));
+    jobs.forEach((job) => allJobs.push({ ...job, company }));
     await delay(1000); // 1s delay to avoid rate limiting
   }
   return allJobs;
@@ -95,17 +97,17 @@ export const mapToJobProps = (
   wj: (WorkableJob | WorkableJobWithDetails) & { company: string },
 ): JobProps => {
   const companyName =
-    getEnumKeyByEnumValue(WorkableCompanyBR, wj.company) ?? 'Unknown';
+    getEnumKeyByEnumValue(WorkableCompanyBR, wj.company) ?? "Unknown";
 
   const normalizeLocation = (location: string): string => {
     const lower = location.toLowerCase();
-    if (lower.includes('são paulo') || lower.includes('sao paulo'))
-      return 'São Paulo, Brazil';
-    if (lower.includes('brazil') || lower.includes('brasil')) return 'Brazil';
+    if (lower.includes("são paulo") || lower.includes("sao paulo"))
+      return "São Paulo, Brazil";
+    if (lower.includes("brazil") || lower.includes("brasil")) return "Brazil";
     return location;
   };
 
-  const locationStr = wj.location?.city || wj.location?.country || 'Remote';
+  const locationStr = wj.location?.city || wj.location?.country || "Remote";
 
   return {
     id: `workable::${wj.company}::${wj.id}`,
@@ -117,4 +119,4 @@ export const mapToJobProps = (
     publishedAt: new Date(wj.created_at),
     description: wj.description,
   };
-}; 
+};

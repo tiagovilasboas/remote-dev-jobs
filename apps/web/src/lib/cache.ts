@@ -1,12 +1,12 @@
-import { MemoryCache } from '@remote-dev-jobs/core';
+import { MemoryCache } from "@remote-dev-jobs/core";
 
 // Cache global para o Next.js
-const nextCache = new MemoryCache({ 
+const nextCache = new MemoryCache({
   ttlSeconds: 300, // 5 minutos
-  prefix: 'next' 
+  prefix: "next",
 });
 
 // Iniciar limpeza automática
 nextCache.startCleanup();
 
-export { nextCache }; 
+export { nextCache };

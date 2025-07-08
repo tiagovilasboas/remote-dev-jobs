@@ -1,4 +1,4 @@
-import { JobId } from './JobId';
+import { JobId } from "./JobId";
 
 export interface JobProps {
   id: string;
@@ -52,4 +52,4 @@ export class Job {
       description: this.description,
     };
   }
-} 
+}

@@ -7,4 +7,4 @@ export interface JobItem {
   url: string;
   salary?: string;
   description?: string;
-} 
+}

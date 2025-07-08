@@ -1,8 +1,8 @@
 "use client";
 
-import { JobCard } from './JobCard';
-import { JobItem } from './JobItem';
-import { Spinner } from './Spinner';
+import { JobCard } from "./JobCard";
+import { JobItem } from "./JobItem";
+import { Spinner } from "./Spinner";
 
 interface Props {
   jobs: JobItem[];
@@ -13,7 +13,7 @@ interface Props {
 export const JobList = ({ jobs, isLoading, children }: Props) => {
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-40">
+      <div className="flex h-40 items-center justify-center">
         <Spinner />
       </div>
     );
@@ -21,7 +21,7 @@ export const JobList = ({ jobs, isLoading, children }: Props) => {
 
   if (jobs.length === 0) {
     return (
-      <div className="text-center text-gray-500 py-10">
+      <div className="py-10 text-center text-gray-500">
         Nenhuma vaga encontrada. Tente outros filtros.
       </div>
     );
@@ -29,9 +29,9 @@ export const JobList = ({ jobs, isLoading, children }: Props) => {
 
   return (
     <ul>
-      {jobs.map(job => (
+      {jobs.map((job) => (
         <li key={job.id.value}>{children(job)}</li>
       ))}
     </ul>
   );
-}; 
+};

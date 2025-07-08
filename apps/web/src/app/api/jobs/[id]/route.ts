@@ -1,53 +1,61 @@
-import { NextResponse } from 'next/server';
-import { GetJobDetailsUseCase } from '@remote-dev-jobs/application/get-job-details';
-import { RemotiveRepo } from '@remote-dev-jobs/infra/remotive/RemotiveRepo';
-import { GreenhouseRepo } from '@remote-dev-jobs/infra/greenhouse/GreenhouseRepo';
-import { WorkableRepo } from '@remote-dev-jobs/infra/workable/WorkableRepo';
-import { ArbeitnowRepo } from '@remote-dev-jobs/infra/arbeitnow/ArbeitnowRepo';
-import { nextCache } from '../../../../lib/cache';
+import { nextCache } from "../../../../lib/cache";
+import { GetJobDetailsUseCase } from "@remote-dev-jobs/application/get-job-details";
+import { JobRepository } from "@remote-dev-jobs/core";
+import { JobRepoFactory } from "@remote-dev-jobs/infra/factory/JobRepoFactory";
+import { getEnabledSources } from "@remote-dev-jobs/infra/sources/JobSources";
+import { NextRequest, NextResponse } from "next/server";
 
-function getJobDetailsFactory() {
-  const remotiveRepo = new RemotiveRepo();
-  const greenhouseRepo = new GreenhouseRepo();
-  const workableRepo = new WorkableRepo();
-  const arbeitnowRepo = new ArbeitnowRepo();
+function getJobDetailsFactory(): GetJobDetailsUseCase {
+  const enabledSources = getEnabledSources();
+  const repositories: Record<string, JobRepository> = {};
 
-  const useCase = new GetJobDetailsUseCase({
-    [remotiveRepo.source]: remotiveRepo,
-    [greenhouseRepo.source]: greenhouseRepo,
-    [workableRepo.source]: workableRepo,
-    [arbeitnowRepo.source]: arbeitnowRepo,
+  enabledSources.forEach((source) => {
+    try {
+      const repo = JobRepoFactory.createRateLimitedRepo(source);
+      repositories[repo.source] = repo;
+    } catch (error) {
+      console.error(`Erro ao criar repositório para ${source}:`, error);
+    }
   });
 
-  return useCase;
+  return new GetJobDetailsUseCase(repositories);
 }
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
-  
+type RouteContext = {
+  params: {
+    id: string;
+  };
+};
+
+export async function GET(request: NextRequest, context: RouteContext) {
+  const { id } = context.params;
+  if (!id) {
+    return NextResponse.json(
+      { message: "Job ID is required" },
+      { status: 400 },
+    );
+  }
+
   // Criar chave de cache
   const cacheKey = `api:job:${id}`;
-  
+
   // Tentar buscar do cache
   const cached = await nextCache.get(cacheKey);
   if (cached) {
     return NextResponse.json(cached);
   }
 
-  const useCase = getJobDetailsFactory();
-  const job = await useCase.execute(id);
+  const getJobDetails = getJobDetailsFactory();
+  const job = await getJobDetails.execute(id);
 
   if (!job) {
-    return NextResponse.json({ message: 'Job not found' }, { status: 404 });
+    return NextResponse.json({ message: "Job not found" }, { status: 404 });
   }
 
   const result = job.toPrimitives();
-  
+
   // Salvar no cache
   await nextCache.set(cacheKey, result, 300);
-  
+
   return NextResponse.json(result);
-} 
+}

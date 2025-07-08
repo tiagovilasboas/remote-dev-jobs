@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { CacheManager } from '../../../lib/cacheUtils';
+import { CacheManager } from "../../../lib/cacheUtils";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function GET() {
   try {
@@ -7,8 +7,8 @@ export async function GET() {
     return NextResponse.json(stats);
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to get cache stats' },
-      { status: 500 }
+      { error: "Failed to get cache stats" },
+      { status: 500 },
     );
   }
 }
@@ -16,22 +16,22 @@ export async function GET() {
 export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const jobId = searchParams.get('jobId');
-    const type = searchParams.get('type');
+    const jobId = searchParams.get("jobId");
+    const type = searchParams.get("type");
 
     if (jobId) {
       await CacheManager.invalidateJobCache(jobId);
-    } else if (type === 'jobs') {
+    } else if (type === "jobs") {
       await CacheManager.invalidateJobsCache();
     } else {
       await CacheManager.invalidateJobsListCache();
     }
 
-    return NextResponse.json({ message: 'Cache invalidated successfully' });
+    return NextResponse.json({ message: "Cache invalidated successfully" });
   } catch (error) {
     return NextResponse.json(
-      { error: 'Failed to invalidate cache' },
-      { status: 500 }
+      { error: "Failed to invalidate cache" },
+      { status: 500 },
     );
   }
-} 
+}
