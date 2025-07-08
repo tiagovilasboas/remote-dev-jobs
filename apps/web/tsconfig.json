@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/next/tsconfig.json",
   "compilerOptions": {
+    "target": "es2020",
     "baseUrl": ".",
     "paths": {
       "@tiago/*": [
