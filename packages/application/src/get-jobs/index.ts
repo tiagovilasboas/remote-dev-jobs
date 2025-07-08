@@ -12,4 +12,4 @@ export const getJobsFactory = () =>
   );
 
 export { GetJobs } from './GetJobs';
-export { GetJobsFilters } from './GetJobs'; 
+export type { GetJobsFilters } from './GetJobs'; 
