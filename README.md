@@ -38,24 +38,41 @@ Use-o como ponto de partida em novos projetos ou como vitrine do que já dominam
 
 Este projeto segue um conjunto de diretrizes para garantir um código limpo, manutenível e escalável.
 
-### Princípios de Código
-- **Funções Curtas**: Máximo de 20 linhas e apenas um nível de abstração interna.
-- **Nomenclatura Clara**: Métodos de ação seguem o padrão `verboSubstantivo` (ex: `toggleFavorite`, `getJobs`).
-- **Evite `utils` Genéricos**: Prefira nomes de domínio específicos (ex: `DateRange` em vez de `dateUtils`).
-- **Injeção de Dependência**: O `core` depende apenas de interfaces; implementações concretas ficam em `infra`.
+### 🔹 Princípios de Código
 
-### Arquitetura em Camadas
-As dependências entre os pacotes são rigorosamente controladas pela regra `boundaries` do ESLint.
+**Funções com máx. 20 linhas e apenas 1 nível de abstração interna.**
 
-- `core`: Não possui dependências externas.
-- `application`: Depende apenas do `core`.
-- `infra`: Depende apenas do `core`.
-- `web`: Depende de `application` e `ui`.
+**Métodos de ação seguem padrão verboSubstantivo** (ex: `toggleFavorite`, `getJobs`).
 
-### Pirâmide de Testes
-- **Testes Unitários**: Foco em `core` e `application`, usando Jest e contratos de repositório.
-- **Testes de Integração**: Foco em `infra`, com mocks mínimos para serviços externos.
-- **Testes End-to-End (E2E)**: Foco em `web`, simulando a jornada completa do usuário (Cypress/Playwright).
+**Evite utils genéricos** – prefira nomes de domínio (ex: `DateRange` em vez de `dateUtils`).
+
+**Core depende só de interfaces**; implementações concretas ficam em `infra`.
+
+### 🔹 Arquitetura em Camadas
+
+**Camadas (via eslint-plugin-boundaries):**
+- `core` → nenhum
+- `application` → `core`
+- `infra` → `core`
+- `web` → `application` + `ui`
+
+**Alias de importação:**
+- `@/*` → `apps/web/src/*`
+- `@remote-dev-jobs/<pkg>` → `packages/<pkg>/`
+
+### 🔹 Segurança e Ferramentas
+
+**Segurança:** middleware `@next-safe/middleware` com CSP básico.
+
+**Lint extra:** `eslint-plugin-unused-imports`, `prettier-plugin-tailwindcss`.
+
+### 🔹 Pirâmide de Testes
+
+**Unit** – `core` & `application` (Jest + contratos)
+
+**Integration** – `infra` (mock externo mínimo)
+
+**E2E** – `web` (Cypress/Playwright)
 
 > Siga estas práticas em novas features e PRs para manter a consistência e a qualidade do projeto.
 
