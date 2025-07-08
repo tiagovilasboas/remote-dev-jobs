@@ -1,17 +1,23 @@
-import { JobRepository } from '@tiago/core/jobs/JobRepository';
-import { Job } from '@tiago/core/jobs/Job';
+import {
+  Job,
+  JobRepository,
+  JobFilterService,
+  JobFilters,
+} from "@remote-dev-jobs/core";
 
-export interface GetJobsFilters {
+export type GetJobsFilters = {
+  query?: string;
+  workType?: string;
+  datePosted?: string;
   stack?: string;
   seniority?: string;
   location?: string;
-  query?: string;
-}
+};
 
-export interface PaginationOptions {
+export type PaginationOptions = {
   page?: number;
-  pageSize?: number;
-}
+  limit?: number;
+};
 
 export interface GetJobsResult {
   items: Job[];
@@ -21,45 +27,23 @@ export interface GetJobsResult {
 export class GetJobs {
   constructor(private readonly jobRepo: JobRepository) {}
 
-  async execute(filters: GetJobsFilters = {}, pagination: PaginationOptions = {}): Promise<GetJobsResult> {
-    const effectiveFilters: GetJobsFilters = {
+  async execute(
+    filters: GetJobsFilters = {},
+    pagination: PaginationOptions = {},
+  ): Promise<GetJobsResult> {
+    const effectiveFilters: JobFilters = {
       ...filters,
-      location: filters.location ?? 'brazil',
+      location: filters.location ?? "brazil",
     };
-    const all = await this.jobRepo.listAll();
-    const filtered = all.filter(job => {
-      if (
-        effectiveFilters.query &&
-        ![
-          job.title.toLowerCase(),
-          job.company.toLowerCase(),
-        ].some(text => text.includes(effectiveFilters.query!.toLowerCase()))
-      ) {
-        return false;
-      }
-      if (effectiveFilters.stack && !job.title.toLowerCase().includes(effectiveFilters.stack.toLowerCase())) {
-        return false;
-      }
-      if (
-        effectiveFilters.seniority &&
-        !job.title.toLowerCase().includes(effectiveFilters.seniority.toLowerCase())
-      ) {
-        return false;
-      }
-      if (
-        effectiveFilters.location &&
-        !job.location.toLowerCase().includes(effectiveFilters.location.toLowerCase())
-      ) {
-        return false;
-      }
-      return true;
-    });
 
-    const sorted = filtered.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+    const all = await this.jobRepo.listAll();
+    const filtered = JobFilterService.filterJobs(all, effectiveFilters);
+    const sorted = JobFilterService.sortByDate(filtered);
+
     const page = Math.max(1, pagination.page ?? 1);
-    const size = Math.max(1, pagination.pageSize ?? 20);
-    const start = (page - 1) * size;
-    const items = sorted.slice(start, start + size);
+    const size = Math.max(1, pagination.limit ?? 20);
+    const items = JobFilterService.paginate(sorted, page, size);
+
     return { items, total: filtered.length };
   }
-} 
+}
