@@ -108,3 +108,33 @@ Este projeto serve como ponto de partida para qualquer aplicação full-stack Ne
 | Versionamento | Changesets para publicar pacotes (ex.: `ui`) | Reuso dentro ou fora do mono |
 
 > Basta focar na lógica de negócio e UI; infraestrutura e boas práticas já estão pavimentadas. 
+
+## Arquitetura
+
+```
+packages/
+  core        – Entidades e contratos (Job, JobRepository)
+  application – Casos de uso (GetJobs)
+  infra       – Adaptadores externos (RemotiveRepo, ArbeitnowRepo, GreenhouseRepo, LeverRepo, AggregateJobRepo)
+  ui          – Componentes compartilhados (JobCard, JobList, Button)
+apps/
+  web         – BFF + UI Next.js (rota /api/jobs, páginas, tailwind)
+```
+
+### Fluxo
+1. UI chama `/api/jobs` (BFF).
+2. A rota usa `getJobsFactory` → `GetJobs`.
+3. `GetJobs` consulta `AggregateJobRepo`, que reúne dados dos repositórios individuais.
+4. Resposta deduplicada é devolvida para a UI.
+
+### Execução local
+```bash
+pnpm install
+pnpm turbo run build # compila pacotes
+pnpm --filter web dev   # inicia Next.js
+```
+
+### Filtros disponíveis
+`/api/jobs?stack=react&seniority=senior&location=brazil`
+
+--- 
