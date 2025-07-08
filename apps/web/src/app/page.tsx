@@ -1,5 +1,5 @@
-import { JobList } from '@remote-dev-jobs/ui';
-import { getJobsAction } from './actions/getJobs';
+import dynamic from 'next/dynamic';
+import JobsSection from '../components/JobsSection';
 
 export default async function HomePage({ searchParams }: { searchParams?: { [key: string]: string } }) {
   const filters: any = {};
@@ -9,7 +9,6 @@ export default async function HomePage({ searchParams }: { searchParams?: { [key
   set('location', searchParams?.location);
   set('query', searchParams?.q);
   const pageNum = Number(searchParams?.page ?? '1');
-  const { items, total } = await getJobsAction(filters, { page: pageNum });
 
   return (
     <main className="min-h-screen bg-gray-50 p-8">
@@ -29,19 +28,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { [key
           Buscar
         </button>
       </form>
-      <JobList jobs={items} />
-      <div className="mt-6 flex justify-center gap-4">
-        {pageNum > 1 && (
-          <a href={`/?${new URLSearchParams({ ...filters, page: String(pageNum - 1) }).toString()}`} className="text-blue-600 hover:underline">
-            ← Anterior
-          </a>
-        )}
-        {pageNum * 20 < total && (
-          <a href={`/?${new URLSearchParams({ ...filters, page: String(pageNum + 1) }).toString()}`} className="text-blue-600 hover:underline">
-            Próxima →
-          </a>
-        )}
-      </div>
+      <JobsSection filters={filters} page={pageNum} />
     </main>
   );
 } 
