@@ -6,8 +6,8 @@ import { Suspense } from "react";
 export default function HomePage() {
   return (
     <main className="mx-auto max-w-7xl">
-      <h1 className="pl-6 pt-6 text-3xl font-bold">
-        Encontre sua vaga dev remota
+      <h1 className="pt-6 pb-6 text-3xl font-bold">
+        Encontre sua vaga de dev
       </h1>
       <Suspense
         fallback={
