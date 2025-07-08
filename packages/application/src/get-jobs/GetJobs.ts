@@ -8,16 +8,26 @@ export interface GetJobsFilters {
   query?: string;
 }
 
+export interface PaginationOptions {
+  page?: number;
+  pageSize?: number;
+}
+
+export interface GetJobsResult {
+  items: Job[];
+  total: number;
+}
+
 export class GetJobs {
   constructor(private readonly jobRepo: JobRepository) {}
 
-  async execute(filters: GetJobsFilters = {}): Promise<Job[]> {
+  async execute(filters: GetJobsFilters = {}, pagination: PaginationOptions = {}): Promise<GetJobsResult> {
     const effectiveFilters: GetJobsFilters = {
       ...filters,
       location: filters.location ?? 'brazil',
     };
     const all = await this.jobRepo.listAll();
-    return all.filter(job => {
+    const filtered = all.filter(job => {
       if (
         effectiveFilters.query &&
         ![
@@ -44,5 +54,12 @@ export class GetJobs {
       }
       return true;
     });
+
+    const sorted = filtered.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+    const page = Math.max(1, pagination.page ?? 1);
+    const size = Math.max(1, pagination.pageSize ?? 20);
+    const start = (page - 1) * size;
+    const items = sorted.slice(start, start + size);
+    return { items, total: filtered.length };
   }
 } 
