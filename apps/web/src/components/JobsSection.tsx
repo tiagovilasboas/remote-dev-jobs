@@ -22,7 +22,7 @@ export default function JobsSection({ filters, page }: Props) {
     params.set('page', String(page));
     fetch(`/api/jobs?${params.toString()}`)
       .then(res => res.json())
-      .then(res => setData(res))
+      .then(res => setData({ ...res, items: res.items.map((j: any) => ({ ...j, publishedAt: new Date(j.publishedAt) })) }))
       .finally(() => setLoading(false));
   }, [JSON.stringify(filters), page]);
 
