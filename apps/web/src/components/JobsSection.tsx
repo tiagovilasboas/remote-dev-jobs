@@ -9,6 +9,8 @@ interface Props {
   page: number;
 }
 
+const PAGE_SIZE = 20;
+
 export default function JobsSection({ filters, page }: Props) {
   const [data, setData] = useState<GetJobsResult | null>(null);
   const [loading, setLoading] = useState(true);
@@ -17,14 +19,50 @@ export default function JobsSection({ filters, page }: Props) {
     setLoading(true);
     const params = new URLSearchParams();
     Object.entries(filters).forEach(([k, v]) => {
-      if (v) params.set(k, v);
+      if (v) params.set(k === 'query' ? 'q' : k, v);
     });
     params.set('page', String(page));
     fetch(`/api/jobs?${params.toString()}`)
       .then(res => res.json())
-      .then(res => setData({ ...res, items: res.items.map((j: any) => ({ ...j, id: typeof j.id === 'string' ? { value: j.id } : j.id, publishedAt: new Date(j.publishedAt) })) }))
+      .then(res =>
+        setData({
+          ...res,
+          items: res.items.map((j: any) => ({
+            ...j,
+            id: typeof j.id === 'string' ? { value: j.id } : j.id,
+            publishedAt: new Date(j.publishedAt),
+          })),
+        }),
+      )
       .finally(() => setLoading(false));
   }, [JSON.stringify(filters), page]);
 
-  return <JobList jobs={data?.items ?? []} isLoading={loading} />;
+  const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 1;
+
+  return (
+    <>
+      {/* @ts-ignore */}
+      <JobList jobs={data?.items ?? []} isLoading={loading} />
+      {!loading && data && (
+        <div className="mt-6 flex justify-center gap-4">
+          {page > 1 && (
+            <a
+              href={`/?${new URLSearchParams({ ...filters, page: String(page - 1) }).toString()}`}
+              className="text-blue-600 hover:underline"
+            >
+              ← Previous
+            </a>
+          )}
+          {page < totalPages && (
+            <a
+              href={`/?${new URLSearchParams({ ...filters, page: String(page + 1) }).toString()}`}
+              className="text-blue-600 hover:underline"
+            >
+              Next →
+            </a>
+          )}
+        </div>
+      )}
+    </>
+  );
 } 
