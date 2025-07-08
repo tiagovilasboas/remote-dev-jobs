@@ -18,13 +18,19 @@ const ArbeitnowResponseSchema = z.object({
 export type ArbeitnowJob = z.infer<typeof ArbeitnowJobSchema>;
 
 export const fetchArbeitnowJobs = async (): Promise<ArbeitnowJob[]> => {
-  const resp = await fetch('https://api.arbeitnow.com/v1/job-board-api');
-  if (!resp.ok) {
-    throw new Error(`Arbeitnow API error: ${resp.status}`);
+  try {
+    const resp = await fetch('https://api.arbeitnow.com/v1/job-board-api');
+    if (!resp.ok) {
+      console.warn(`[Arbeitnow] responded ${resp.status}`);
+      return [];
+    }
+    const json = await resp.json();
+    const parsed = ArbeitnowResponseSchema.parse(json);
+    return parsed.data;
+  } catch (err) {
+    console.warn('[Arbeitnow] fetch failed', err);
+    return [];
   }
-  const json = await resp.json();
-  const parsed = ArbeitnowResponseSchema.parse(json);
-  return parsed.data;
 };
 
 export const mapToJobProps = (aj: ArbeitnowJob): JobProps => ({
