@@ -7,7 +7,7 @@ interface Props {
 export const JobCard = ({ job }: Props) => (
   <div className="rounded border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition">
     <h3 className="text-lg font-semibold text-blue-600">
-      <a href={job.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+      <a href={`/jobs/${job.id.value}`} className="hover:underline">
         {job.title}
       </a>
     </h3>
