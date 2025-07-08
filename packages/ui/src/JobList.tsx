@@ -6,9 +6,10 @@ import { JobCard, JobCardSkeleton } from './JobCard';
 interface Props {
   jobs: Job[];
   isLoading?: boolean;
+  baseQuery?: string;
 }
 
-export const JobList = ({ jobs, isLoading }: Props) => {
+export const JobList = ({ jobs, isLoading, baseQuery }: Props) => {
   if (isLoading) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -26,7 +27,7 @@ export const JobList = ({ jobs, isLoading }: Props) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {jobs.map(job => (
-        <JobCard key={job.id.value} job={job} />
+        <JobCard key={job.id.value} job={job} href={`/?${baseQuery ? baseQuery + '&' : ''}id=${job.id.value}`} />
       ))}
     </div>
   );

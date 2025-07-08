@@ -2,12 +2,13 @@ import { Job } from '@remote-dev-jobs/core';
 
 interface Props {
   job: Job;
+  href?: string;
 }
 
-export const JobCard = ({ job }: Props) => (
+export const JobCard = ({ job, href }: Props) => (
   <div className="rounded border border-gray-200 bg-white p-4 shadow-sm hover:shadow-md transition">
     <h3 className="text-lg font-semibold text-blue-600">
-      <a href={`/jobs/${job.id.value}`} className="hover:underline">
+      <a href={href ?? `/jobs/${job.id.value}`} className="hover:underline">
         {job.title}
       </a>
     </h3>

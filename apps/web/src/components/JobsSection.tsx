@@ -39,10 +39,12 @@ export default function JobsSection({ filters, page }: Props) {
 
   const totalPages = data ? Math.ceil(data.total / PAGE_SIZE) : 1;
 
+  const qsBase = new URLSearchParams(filters as any).toString();
+
   return (
     <>
       {/* @ts-ignore */}
-      <JobList jobs={data?.items ?? []} isLoading={loading} />
+      <JobList jobs={data?.items ?? []} isLoading={loading} baseQuery={qsBase} />
       {!loading && data && (
         <div className="mt-6 flex justify-center gap-4">
           {page > 1 && (
