@@ -27,11 +27,18 @@ export async function GET(req: NextRequest) {
   // Tentar buscar do cache
   const cached = await nextCache.get(cacheKey);
   if (cached) {
+    console.log(`[API] Cache hit para: ${cacheKey}`);
     return NextResponse.json(cached);
   }
 
+  console.log(`[API] Cache miss, buscando dados para: ${cacheKey}`);
   try {
     const result = await getJobs.execute(filters, { page, limit });
+    
+    // Salvar no cache para próximas requisições
+    await nextCache.set(cacheKey, result, 300); // 5 minutos
+    console.log(`[API] Dados salvos no cache: ${result.total} vagas`);
+    
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error fetching jobs:", error);
