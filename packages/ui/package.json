@@ -16,5 +16,6 @@
     "@types/react-dom": "^18.2.17",
     "@types/node": "^20.10.5",
     "typescript": "^5.3.3"
-  }
+  },
+  "dependencies": { "@remote-dev-jobs/core": "workspace:*" }
 } 
