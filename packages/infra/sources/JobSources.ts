@@ -13,6 +13,7 @@ export enum JobSource {
   GREENHOUSE = "Greenhouse",
   LEVER = "Lever",
   WORKABLE = "Workable",
+  JSEARCH = "JSearch",
 
   // APIs Brasileiras
   GUPY = "Gupy",
@@ -60,7 +61,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.ARBEITNOW,
     type: SourceType.API,
     baseUrl: "https://www.arbeitnow.com/api/jobs",
-    enabled: true,
+    enabled: false,
     rateLimitMinutes: 20,
     cacheKey: "arbeitnow-jobs",
     description: "Plataforma europeia de vagas remotas",
@@ -100,6 +101,17 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     tags: ["recrutamento", "api"],
   },
 
+  [JobSource.JSEARCH]: {
+    name: JobSource.JSEARCH,
+    type: SourceType.API,
+    baseUrl: "https://jsearch.p.rapidapi.com",
+    enabled: true,
+    rateLimitMinutes: 20,
+    cacheKey: "jsearch-jobs",
+    description: "API de IA para busca de vagas com GPT-3 + BERT",
+    tags: ["ia", "api", "rapidapi", "gpt"],
+  },
+
   [JobSource.GUPY]: {
     name: JobSource.GUPY,
     type: SourceType.API,
@@ -115,7 +127,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.VAGAS_COM,
     type: SourceType.SCRAPER,
     baseUrl: "https://www.vagas.com.br",
-    enabled: true,
+    enabled: false, // Desabilitado - problemas com proteção anti-bot
     rateLimitMinutes: 20,
     cacheKey: "vagascom-jobs",
     description: "Uma das principais plataformas de vagas do Brasil",
@@ -126,7 +138,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.INFOJOBS,
     type: SourceType.SCRAPER,
     baseUrl: "https://www.infojobs.com.br",
-    enabled: true,
+    enabled: false, // Desabilitado - problemas com proteção anti-bot
     rateLimitMinutes: 20,
     cacheKey: "infojobs-jobs",
     description: "Plataforma tradicional de vagas brasileira",
@@ -137,7 +149,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.CATHO,
     type: SourceType.SCRAPER,
     baseUrl: "https://www.catho.com.br",
-    enabled: true,
+    enabled: false, // Desabilitado - problemas com proteção anti-bot
     rateLimitMinutes: 20,
     cacheKey: "catho-jobs",
     description: "Plataforma de vagas brasileira",
@@ -148,7 +160,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.REMOTAR,
     type: SourceType.SCRAPER,
     baseUrl: "https://remotar.com.br",
-    enabled: true,
+    enabled: false, // Desabilitado - problemas com proteção anti-bot
     rateLimitMinutes: 20,
     cacheKey: "remotar-jobs",
     description: "Especializada em vagas 100% remotas",
@@ -159,7 +171,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.TRAMPOS,
     type: SourceType.SCRAPER,
     baseUrl: "https://trampos.co",
-    enabled: true,
+    enabled: true, // Mantido - pode funcionar melhor
     rateLimitMinutes: 20,
     cacheKey: "trampos-jobs",
     description: "Plataforma veterana em tech",
@@ -170,7 +182,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.HIPSTERS,
     type: SourceType.SCRAPER,
     baseUrl: "https://hipsters.jobs",
-    enabled: true,
+    enabled: false, // Mantido - comunidade pode ser mais acessível
     rateLimitMinutes: 20,
     cacheKey: "hipsters-jobs",
     description: "Mantido pela comunidade Alura",
@@ -181,7 +193,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.COODESH,
     type: SourceType.SCRAPER,
     baseUrl: "https://coodesh.com",
-    enabled: true,
+    enabled: false, // Desabilitado - problemas com proteção anti-bot
     rateLimitMinutes: 20,
     cacheKey: "coodesh-jobs",
     description: "Plataforma com testes automáticos",
@@ -192,7 +204,7 @@ export const SOURCE_CONFIGS: Record<JobSource, SourceConfig> = {
     name: JobSource.INDEED,
     type: SourceType.SCRAPER,
     baseUrl: "https://br.indeed.com",
-    enabled: true,
+    enabled: false, // Desabilitado - problemas com proteção anti-bot
     rateLimitMinutes: 20,
     cacheKey: "indeed-jobs",
     description: "Agregador generalista",
